@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main class="container">
+    <section class="row">
+        <div class="col-md-12">
+            <h1 id="title">Taller Individual</h1>
+            <h2 class="text-dark text-center">Indicaciones</h2>
+            <ul style="margin-top:25px; font-size:18px; line-height:1.8;">
+                <li>Usar la base de datos MatriculacionFinalBD_New.</li>
+                <li>Implementar lectura y escritura de entidades.</li>
+                <li>Modificar el menú según el usuario logeado.</li>
+                <li>Mostrar en vehículos: placa, chasis, marca y año.</li>
+                <li>En detalles mostrar color, marca, avalúo y foto.</li>
+                <li>Calcular el avalúo con la función CalcularAvaluo().</li>
+            </ul>
+            <hr />
+        </div>
+    </section>
+
+    <div class="row text-center">
+
+        <!-- Columna Izquierda: Integrantes -->
+        <section class="col-md-4">
+            <div class="p-4 border rounded" style="background-color:white; min-height:350px;">
+                <h2 class="text-secondary">Integrantes</h2>
+                <div style="margin-top:40px;">
+                    <p style="font-size:32px; margin-bottom:10px;">Alisson Cuenca</p>
+                    <small class="text-muted">Desarrollo y diseño del proyecto</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Columna Derecha: Foto Personal -->
+        <section class="col-md-4">
+            <div class="p-4 border rounded text-center" style="background-color:#f8f9fa; min-height:350px;">
+                <img src="~/Foto/yo.png"
+                     alt="Foto"
+                     class="img-circle img-thumbnail"
+                     style="width:170px; height:170px; object-fit:cover; margin-bottom:20px;" />
+
+                <h2>Desarrolladora</h2>
+                <p class="text-muted" style="font-size:18px;">
+                    Tecnología .NET Framework, ASP.NET MVC y Entity Framework.
+                </p>
+            </div>
+        </section>
+
+
+    </div>
+</main>
