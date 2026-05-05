@@ -49,8 +49,13 @@ namespace _02_MVC.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Nombre de usuario")]
+        [Display(Name = "Nombre De Usuario")]
         public string UserName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -64,8 +69,9 @@ namespace _02_MVC.Models
     public class RegisterViewModel
     {
         [Required]
+        [StringLength(50, ErrorMessage = "El nombre de usuario no puede superar los 50 caracteres.")]
         [Display(Name = "Nombre de usuario")]
-        public string UserName { get; set; }
+        public string NombreUsuario { get; set; }
 
         [Required]
         [EmailAddress]
@@ -92,7 +98,7 @@ namespace _02_MVC.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 3)]
+        [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }

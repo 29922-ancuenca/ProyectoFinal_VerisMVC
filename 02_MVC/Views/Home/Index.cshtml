@@ -1,52 +1,846 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+@{
+    ViewBag.Title = "Proyecto-Veris - Inicio";
 }
 
-<main class="container">
-    <section class="row">
-        <div class="col-md-12">
-            <h1 id="title">Taller Individual</h1>
-            <h2 class="text-dark text-center">Indicaciones</h2>
-            <ul style="margin-top:25px; font-size:18px; line-height:1.8;">
-                <li>Usar la base de datos MatriculacionFinalBD_New.</li>
-                <li>Implementar lectura y escritura de entidades.</li>
-                <li>Modificar el menú según el usuario logeado.</li>
-                <li>Mostrar en vehículos: placa, chasis, marca y año.</li>
-                <li>En detalles mostrar color, marca, avalúo y foto.</li>
-                <li>Calcular el avalúo con la función CalcularAvaluo().</li>
-            </ul>
-            <hr />
-        </div>
-    </section>
+<style>
+/* ══ GENERAL ══ */
+.veris-section { padding: 4rem 1.5rem; }
+.veris-section-alt { padding: 4rem 1.5rem; background: #e8f0fe; }
 
-    <div class="row text-center">
+/* ══ SECTION HEADER ══ */
+.section-header { text-align: center; margin-bottom: 2.8rem; }
+.section-header h2 { font-size: 2rem; font-weight: 800; color: #0b1d3e; margin-bottom: .4rem; }
+.section-header h2 span { color: #1d4ed8; }
+.section-header p { color: #64748b; font-size: .95rem; margin-bottom: .75rem; }
+.section-divider {
+    width: 48px; height: 4px;
+    background: linear-gradient(90deg, #1d4ed8, #60a5fa);
+    border-radius: 2px; margin: 0 auto;
+}
 
-        <!-- Columna Izquierda: Integrantes -->
-        <section class="col-md-4">
-            <div class="p-4 border rounded" style="background-color:white; min-height:350px;">
-                <h2 class="text-secondary">Integrantes</h2>
-                <div style="margin-top:40px;">
-                    <p style="font-size:32px; margin-bottom:10px;">Alisson Cuenca</p>
-                    <small class="text-muted">Desarrollo y diseño del proyecto</small>
+/* ══ HERO ══ */
+.veris-hero {
+    background: linear-gradient(135deg, #040e22 0%, #0b1d3e 40%, #162d55 75%, #1a3a72 100%);
+    padding: 5.5rem 1.5rem 4.5rem;
+    text-align: center; color: #fff;
+}
+.hero-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px; padding: .35rem 1.1rem;
+    font-size: .72rem; letter-spacing: 3px;
+    text-transform: uppercase; color: rgba(255,255,255,.9);
+    margin-bottom: 1.4rem;
+}
+.hero-title { font-size: 2.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+.hero-title .gold { color: #f59e0b; }
+.hero-lead {
+    font-size: 1.05rem; max-width: 560px;
+    margin: 0 auto 2.2rem; opacity: .88; line-height: 1.75;
+}
+.btn-gold {
+    background: #f59e0b; color: #0b1d3e;
+    border: none; border-radius: 50px;
+    padding: .7rem 2rem; font-weight: 700; font-size: .95rem;
+    text-decoration: none; transition: all .2s;
+    display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-gold:hover {
+    background: #fbbf24; color: #0b1d3e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245,158,11,.35);
+}
+.btn-outline-hero {
+    background: transparent; color: #fff;
+    border: 2px solid rgba(255,255,255,.6);
+    border-radius: 50px; padding: .68rem 1.8rem;
+    font-weight: 600; font-size: .95rem;
+    text-decoration: none; transition: all .2s;
+    display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-outline-hero:hover {
+    background: rgba(255,255,255,.12);
+    border-color: #fff; color: #fff;
+}
+
+/* ══ INFO STRIP ══ */
+.info-strip { background: #fff; border-bottom: 1px solid #e2e8f0; }
+.info-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 1.75rem 1rem; border-right: 1px solid #e2e8f0;
+}
+.info-item:last-child { border-right: none; }
+.info-icon-box {
+    width: 50px; height: 50px; flex-shrink: 0;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+}
+.info-icon-box.navy  { background: #dbeafe; color: #1d4ed8; }
+.info-icon-box.green { background: #dcfce7; color: #16a34a; }
+.info-icon-box.amber { background: #fef3c7; color: #d97706; }
+.info-icon-box.violet{ background: #ede9fe; color: #7c3aed; }
+.info-item h6 { font-weight: 700; color: #0b1d3e; margin-bottom: 2px; font-size: .9rem; }
+.info-item p  { font-size: .78rem; color: #64748b; margin: 0; line-height: 1.55; }
+
+/* ══ CAROUSEL ══ */
+.carousel-outer { overflow: hidden; }
+.carousel-bg {
+    height: 380px;
+    position: relative;
+    overflow: hidden;
+}
+/* Specialty gradient backgrounds */
+.bg-c-cardio    { background: linear-gradient(135deg, #7f0000 0%, #b91c1c 100%); }
+.bg-c-pediatria { background: linear-gradient(135deg, #0c2461 0%, #1d4ed8 100%); }
+.bg-c-derma     { background: linear-gradient(135deg, #92400e 0%, #d97706 100%); }
+.bg-c-gineco    { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%); }
+.bg-c-oftalmo   { background: linear-gradient(135deg, #064e3b 0%, #059669 100%); }
+.bg-c-neumo     { background: linear-gradient(135deg, #0c3a60 0%, #0284c7 100%); }
+.bg-c-trauma    { background: linear-gradient(135deg, #14532d 0%, #15803d 100%); }
+.bg-c-neuro     { background: linear-gradient(135deg, #2e1065 0%, #7c3aed 100%); }
+
+.carousel-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 85% 50%, rgba(255,255,255,.06) 0%, transparent 65%);
+}
+/* big decorative number behind content */
+.carousel-deco {
+    position: absolute; right: 6%; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18rem; font-weight: 900; line-height: 1;
+    color: rgba(255,255,255,.05); pointer-events: none;
+    user-select: none; z-index: 0;
+}
+.slide-body {
+    position: relative; z-index: 1;
+    text-align: center; color: #fff;
+    max-width: 640px; width: 100%;
+    padding: 1.5rem 2rem;
+}
+.slide-icon-big { font-size: 3.5rem; line-height: 1; margin-bottom: .65rem; opacity: .9; }
+.slide-specialty { font-size: 2.4rem; font-weight: 800; margin-bottom: .5rem; line-height: 1.2; }
+.slide-desc-text { font-size: .98rem; opacity: .85; margin-bottom: 1.2rem; line-height: 1.6; }
+.slide-badge-sched {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 50px; padding: .45rem 1.4rem;
+    font-size: .88rem; font-weight: 600;
+}
+
+/* ══ SPECIALTY CARDS ══ */
+.spec-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(11,29,62,.08);
+    height: 100%;
+    transition: transform .25s, box-shadow .25s;
+    border: 1px solid #e8edf5;
+}
+.spec-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(29,78,216,.15);
+}
+.spec-card-bar { height: 5px; }
+.spec-card-body { padding: 1.25rem 1.25rem 1rem; }
+.spec-icon-wrap {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+}
+.spec-card-name { font-weight: 700; font-size: .9rem; color: #0b1d3e; }
+.spec-day-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 700; border: none;
+    cursor: default;
+}
+.spec-day-btn.on  { background: #1d4ed8; color: #fff; }
+.spec-day-btn.off { background: #e2e8f0; color: #94a3b8; }
+.spec-card-footer {
+    padding: .8rem 1.25rem;
+    background: #f8faff;
+    border-top: 1px solid #e8edf5;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.spec-time { font-size: .8rem; color: #475569; font-weight: 600; }
+
+/* ══ JORNADA BADGES ══ */
+.badge-mat  { background: #fef3c7; color: #92400e; }
+.badge-ves  { background: #ede9fe; color: #5b21b6; }
+.badge-cont { background: #dcfce7; color: #166534; }
+.jornada-badge {
+    font-size: .72rem; font-weight: 700;
+    padding: .3em .85em; border-radius: 50px;
+}
+
+/* ══ CAROUSEL IMAGE OVERLAY ══ */
+.slide-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; z-index: 0;
+    transition: transform 6s ease;
+}
+.carousel-item.active .slide-img { transform: scale(1.04); }
+.slide-overlay {
+    position: absolute; inset: 0; z-index: 1;
+}
+.slide-content-wrap {
+    height: 380px;
+    position: relative; z-index: 2;
+}
+/* Flechas por encima del contenido del slide */
+#specialtyCarousel .carousel-control-prev,
+#specialtyCarousel .carousel-control-next {
+    z-index: 10;
+}
+.btn-vermas {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.55);
+    color: #fff; border-radius: 50px;
+    padding: .48rem 1.5rem; font-size: .87rem; font-weight: 600;
+    text-decoration: none; transition: all .2s; margin-top: .6rem;
+}
+.btn-vermas:hover {
+    background: rgba(255,255,255,.3);
+    color: #fff; border-color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ══ TEAM ══ */
+.team-section { background: linear-gradient(180deg, #f0f4fa, #dbeafe); }
+.team-card {
+    background: #fff; border-radius: 20px;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(11,29,62,.1);
+    transition: transform .3s, box-shadow .3s;
+    border: 1px solid #e8edf5;
+}
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 45px rgba(29,78,216,.18);
+}
+.team-photo {
+    width: 130px; height: 130px; object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    outline: 3px solid #1d4ed8;
+    box-shadow: 0 8px 24px rgba(29,78,216,.2);
+    margin-bottom: 1.2rem;
+}
+.team-placeholder {
+    width: 130px; height: 130px; border-radius: 50%;
+    background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.2rem; color: #fff;
+    border: 4px solid #fff; outline: 3px solid #1d4ed8;
+    box-shadow: 0 8px 24px rgba(29,78,216,.2);
+    margin: 0 auto 1.2rem;
+}
+.team-name  { font-size: 1.1rem; font-weight: 800; color: #0b1d3e; margin-bottom: .2rem; }
+.team-role  { font-size: .83rem; color: #1d4ed8; font-weight: 600; margin-bottom: .5rem; }
+.team-tech  { font-size: .78rem; color: #64748b; margin-bottom: 1.3rem; }
+.btn-fb {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #1877f2; color: #fff; border: none; border-radius: 50px;
+    padding: .4rem 1.2rem; font-size: .82rem; font-weight: 600;
+    text-decoration: none; transition: all .2s;
+}
+.btn-fb:hover { background: #1467d6; color: #fff; transform: translateY(-1px); }
+</style>
+
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="veris-hero">
+    <div class="hero-pill">
+        <i class="bi bi-plus-circle-fill"></i>Sistema de Salud Integral
+    </div>
+    <h1 class="hero-title">
+        Bienvenido a <span class="gold">Cl&iacute;nica Veris</span>
+    </h1>
+    <p class="hero-lead">
+        Ofrecemos atenci&oacute;n m&eacute;dica integral con especialistas altamente
+        calificados, comprometidos con tu bienestar y salud.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="#especialidades" class="btn-gold">
+            <i class="bi bi-calendar2-check"></i>Ver Especialidades
+        </a>
+        <a href="#equipo" class="btn-outline-hero">
+            <i class="bi bi-people-fill"></i>Nuestro Equipo
+        </a>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     INFO STRIP
+══════════════════════════════════════ -->
+<div class="info-strip">
+    <div class="container-fluid px-4 px-xl-5">
+        <div class="row g-0 mx-auto" style="max-width:1100px;">
+            <div class="col-sm-6 col-lg-3">
+                <div class="info-item">
+                    <div class="info-icon-box navy"><i class="bi bi-clock-fill"></i></div>
+                    <div>
+                        <h6>Horarios</h6>
+                        <p>Matutina: 08:00 &ndash; 12:00<br>Vespertina: 12:00 &ndash; 18:00<br>Lunes a Viernes</p>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Columna Derecha: Foto Personal -->
-        <section class="col-md-4">
-            <div class="p-4 border rounded text-center" style="background-color:#f8f9fa; min-height:350px;">
-                <img src="~/Foto/yo.png"
-                     alt="Foto"
-                     class="img-circle img-thumbnail"
-                     style="width:170px; height:170px; object-fit:cover; margin-bottom:20px;" />
-
-                <h2>Desarrolladora</h2>
-                <p class="text-muted" style="font-size:18px;">
-                    Tecnología .NET Framework, ASP.NET MVC y Entity Framework.
-                </p>
+            <div class="col-sm-6 col-lg-3">
+                <div class="info-item">
+                    <div class="info-icon-box green"><i class="bi bi-heart-pulse-fill"></i></div>
+                    <div>
+                        <h6>8 Especialidades</h6>
+                        <p>Cardiolog&iacute;a, Pediatr&iacute;a, Dermatolog&iacute;a, Ginecolog&iacute;a y m&aacute;s.</p>
+                    </div>
+                </div>
             </div>
-        </section>
+            <div class="col-sm-6 col-lg-3">
+                <div class="info-item">
+                    <div class="info-icon-box amber"><i class="bi bi-calendar2-plus-fill"></i></div>
+                    <div>
+                        <h6>Citas M&eacute;dicas</h6>
+                        <p>Citas en l&iacute;nea. Duraci&oacute;n 1 hora. Del 2000 al 2030.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="info-item">
+                    <div class="info-icon-box violet"><i class="bi bi-shield-fill-check"></i></div>
+                    <div>
+                        <h6>Acceso por Roles</h6>
+                        <p>Administrador, M&eacute;dico y Paciente con permisos espec&iacute;ficos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<!-- ══════════════════════════════════════
+     CAROUSEL — imágenes web + links
+══════════════════════════════════════ -->
+<div class="carousel-outer">
+    <div id="specialtyCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="3"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="4"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="5"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="6"></button>
+            <button type="button" data-bs-target="#specialtyCarousel" data-bs-slide-to="7"></button>
+        </div>
+
+        <div class="carousel-inner">
+
+            <!-- ── CARDIOLOGÍA ── -->
+            <div class="carousel-item active">
+                <div class="carousel-bg bg-c-cardio" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1280&q=80&auto=format&fit=crop"
+                         alt="Cardiolog&iacute;a" class="slide-img" loading="eager"
+                         onerror="this.src='https://picsum.photos/seed/cardiology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(100,0,0,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2665;</div>
+                            <div class="slide-specialty">Cardiolog&iacute;a</div>
+                            <div class="slide-desc-text">Diagn&oacute;stico y tratamiento de enfermedades del coraz&oacute;n</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Mar &bull; Jue &bull; Vie &mdash; 08:00 a 12:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PEDIATRÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-pediatria" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1280&q=80&auto=format&fit=crop"
+                         alt="Pediatr&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/pediatrics/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(12,36,97,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2605;</div>
+                            <div class="slide-specialty">Pediatr&iacute;a</div>
+                            <div class="slide-desc-text">Atenci&oacute;n m&eacute;dica especializada para ni&ntilde;os y adolescentes</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Lun &bull; Mar &bull; Mi&eacute; &bull; Jue &bull; Vie &mdash; 08:00 a 18:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DERMATOLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-derma" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1280&q=80&auto=format&fit=crop"
+                         alt="Dermatolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/dermatology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(120,55,0,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x25CF;</div>
+                            <div class="slide-specialty">Dermatolog&iacute;a</div>
+                            <div class="slide-desc-text">Cuidado y tratamiento de enfermedades de la piel</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Mar &bull; Jue &mdash; 12:00 a 18:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── GINECOLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-gineco" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?w=1280&q=80&auto=format&fit=crop"
+                         alt="Ginecolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/gynecology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(76,29,149,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2764;</div>
+                            <div class="slide-specialty">Ginecolog&iacute;a</div>
+                            <div class="slide-desc-text">Salud integral de la mujer en todas las etapas de la vida</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Lun &bull; Mi&eacute; &bull; Vie &mdash; 08:00 a 18:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── OFTALMOLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-oftalmo" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=1280&q=80&auto=format&fit=crop"
+                         alt="Oftalmolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/ophthalmology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(6,78,59,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x25CE;</div>
+                            <div class="slide-specialty">Oftalmolog&iacute;a</div>
+                            <div class="slide-desc-text">Salud visual y tratamiento de enfermedades de los ojos</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Lun &bull; Vie &mdash; 08:00 a 12:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEUMOLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-neumo" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1559825481-12a05cc00344?w=1280&q=80&auto=format&fit=crop"
+                         alt="Neumolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/pulmonology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(12,58,96,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2728;</div>
+                            <div class="slide-specialty">Neumolog&iacute;a</div>
+                            <div class="slide-desc-text">Diagn&oacute;stico y tratamiento de enfermedades respiratorias</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Lun &bull; Mar &bull; Mi&eacute; &bull; Jue &bull; Vie &mdash; 08:00 a 18:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TRAUMATOLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-trauma" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1280&q=80&auto=format&fit=crop"
+                         alt="Traumatolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/traumatology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(20,83,45,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2695;</div>
+                            <div class="slide-specialty">Traumatolog&iacute;a</div>
+                            <div class="slide-desc-text">Tratamiento de lesiones &oacute;seas, musculares y articulares</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Mar &bull; Jue &mdash; 12:00 a 18:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEUROLOGÍA ── -->
+            <div class="carousel-item">
+                <div class="carousel-bg bg-c-neuro" style="position:relative; overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1280&q=80&auto=format&fit=crop"
+                         alt="Neurolog&iacute;a" class="slide-img" loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/neurology/1280/400'; this.onerror=null;" />
+                    <div class="slide-overlay" style="background:rgba(46,16,101,.72);"></div>
+                    <div class="slide-content-wrap d-flex align-items-center justify-content-center">
+                        <div class="slide-body text-center">
+                            <div class="slide-icon-big">&#x2726;</div>
+                            <div class="slide-specialty">Neurolog&iacute;a</div>
+                            <div class="slide-desc-text">Diagn&oacute;stico y tratamiento de enfermedades del sistema nervioso</div>
+                            <div class="slide-badge-sched mb-3">
+                                <i class="bi bi-calendar3"></i>Mi&eacute; &bull; Jue &bull; Vie &mdash; 08:00 a 12:00
+                            </div>
+                            <a href="#especialidades" class="btn-vermas">
+                                <i class="bi bi-arrow-right-circle-fill"></i>Ver especialidad
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /carousel-inner -->
+
+        <button class="carousel-control-prev" type="button"
+                data-bs-target="#specialtyCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button"
+                data-bs-target="#specialtyCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ESPECIALIDADES — TARJETAS BOOTSTRAP
+══════════════════════════════════════ -->
+<section id="especialidades" class="veris-section-alt">
+    <div class="container" style="max-width:1100px;">
+
+        <div class="section-header">
+            <h2>Nuestras <span>Especialidades</span></h2>
+            <p>Horarios de atenci&oacute;n semanal &mdash; Lunes a Viernes, sin atenci&oacute;n s&aacute;bados y domingos</p>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- ── CARDIOLOGÍA ── Mar Jue Vie | 08-12 | Matutina -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#dc2626;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#fee2e2;">
+                                <i class="bi bi-heart-fill" style="color:#dc2626;"></i>
+                            </div>
+                            <span class="spec-card-name">Cardiolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn off">L</span>
+                            <span class="spec-day-btn on">M</span>
+                            <span class="spec-day-btn off">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;12:00</span>
+                        <span class="jornada-badge badge-mat">Matutina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PEDIATRÍA ── L M X J V | 08-18 | Ininterrumpido -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#1d4ed8;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#dbeafe;">
+                                <i class="bi bi-stars" style="color:#1d4ed8;"></i>
+                            </div>
+                            <span class="spec-card-name">Pediatr&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn on">L</span>
+                            <span class="spec-day-btn on">M</span>
+                            <span class="spec-day-btn on">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;18:00</span>
+                        <span class="jornada-badge badge-cont">Ininterrumpido</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DERMATOLOGÍA ── M J | 12-18 | Vespertina -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#d97706;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#fef3c7;">
+                                <i class="bi bi-droplet-fill" style="color:#d97706;"></i>
+                            </div>
+                            <span class="spec-card-name">Dermatolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn off">L</span>
+                            <span class="spec-day-btn on">M</span>
+                            <span class="spec-day-btn off">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn off">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>12:00&ndash;18:00</span>
+                        <span class="jornada-badge badge-ves">Vespertina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── GINECOLOGÍA ── L X V | 08-18 | Ininterrumpido -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#7c3aed;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#ede9fe;">
+                                <i class="bi bi-gender-female" style="color:#7c3aed;"></i>
+                            </div>
+                            <span class="spec-card-name">Ginecolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn on">L</span>
+                            <span class="spec-day-btn off">M</span>
+                            <span class="spec-day-btn on">X</span>
+                            <span class="spec-day-btn off">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;18:00</span>
+                        <span class="jornada-badge badge-cont">Ininterrumpido</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── OFTALMOLOGÍA ── L V | 08-12 | Matutina -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#059669;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#d1fae5;">
+                                <i class="bi bi-eye-fill" style="color:#059669;"></i>
+                            </div>
+                            <span class="spec-card-name">Oftalmolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn on">L</span>
+                            <span class="spec-day-btn off">M</span>
+                            <span class="spec-day-btn off">X</span>
+                            <span class="spec-day-btn off">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;12:00</span>
+                        <span class="jornada-badge badge-mat">Matutina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEUMOLOGÍA ── L M X J V | 08-18 | Ininterrumpido -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#0284c7;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#e0f2fe;">
+                                <i class="bi bi-wind" style="color:#0284c7;"></i>
+                            </div>
+                            <span class="spec-card-name">Neumolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn on">L</span>
+                            <span class="spec-day-btn on">M</span>
+                            <span class="spec-day-btn on">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;18:00</span>
+                        <span class="jornada-badge badge-cont">Ininterrumpido</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TRAUMATOLOGÍA ── M J | 12-18 | Vespertina -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#15803d;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#dcfce7;">
+                                <i class="bi bi-bandaid-fill" style="color:#15803d;"></i>
+                            </div>
+                            <span class="spec-card-name">Traumatolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn off">L</span>
+                            <span class="spec-day-btn on">M</span>
+                            <span class="spec-day-btn off">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn off">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>12:00&ndash;18:00</span>
+                        <span class="jornada-badge badge-ves">Vespertina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEUROLOGÍA ── X J V | 08-12 | Matutina -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="spec-card">
+                    <div class="spec-card-bar" style="background:#6d28d9;"></div>
+                    <div class="spec-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="spec-icon-wrap" style="background:#ede9fe;">
+                                <i class="bi bi-lightning-fill" style="color:#6d28d9;"></i>
+                            </div>
+                            <span class="spec-card-name">Neurolog&iacute;a</span>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="spec-day-btn off">L</span>
+                            <span class="spec-day-btn off">M</span>
+                            <span class="spec-day-btn on">X</span>
+                            <span class="spec-day-btn on">J</span>
+                            <span class="spec-day-btn on">V</span>
+                        </div>
+                    </div>
+                    <div class="spec-card-footer">
+                        <span class="spec-time"><i class="bi bi-clock me-1"></i>08:00&ndash;12:00</span>
+                        <span class="jornada-badge badge-mat">Matutina</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /row -->
+
+        <!-- Leyenda -->
+        <div class="text-center mt-4">
+            <div class="d-inline-flex align-items-center gap-2 flex-wrap justify-content-center"
+                 style="background:#fff; border:1px solid #e2e8f0; border-radius:50px; padding:.5rem 1.5rem; font-size:.8rem; color:#475569;">
+                <span class="spec-day-btn on" style="width:24px;height:24px;font-size:.65rem;">L</span>Lunes
+                <span class="spec-day-btn on" style="width:24px;height:24px;font-size:.65rem;">M</span>Martes
+                <span class="spec-day-btn on" style="width:24px;height:24px;font-size:.65rem;">X</span>Mi&eacute;rcoles
+                <span class="spec-day-btn on" style="width:24px;height:24px;font-size:.65rem;">J</span>Jueves
+                <span class="spec-day-btn on" style="width:24px;height:24px;font-size:.65rem;">V</span>Viernes
+                <span class="text-muted mx-1">|</span>
+                <i class="bi bi-x-circle text-danger"></i>S&aacute;bado y Domingo sin atenci&oacute;n
+            </div>
+        </div>
 
     </div>
-</main>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     EQUIPO DE DESARROLLO
+══════════════════════════════════════ -->
+<section id="equipo" class="team-section veris-section">
+    <div class="container" style="max-width:800px;">
+
+        <div class="section-header">
+            <h2>Equipo de <span>Desarrollo</span></h2>
+            <p>Integrantes del Grupo 03 &mdash; Proyecto Final Segundo Parcial</p>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="row justify-content-center g-4">
+
+            <!-- Pamela Carriel -->
+            <div class="col-md-5">
+                <div class="team-card">
+                    <img src="~/Foto/PamelaCarriel.jpeg"
+                         alt="Pamela Carriel"
+                         class="team-photo"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="team-placeholder" style="display:none;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="team-name">Pamela Carriel</div>
+                    <div class="team-role"><i class="bi bi-code-slash me-1"></i>Desarrolladora Full Stack</div>
+                    <div class="team-tech">.NET Framework &bull; ASP.NET MVC &bull; Entity Framework</div>
+                    <a href="https://www.facebook.com/pame.carriel" target="_blank" rel="noopener" class="btn-fb">
+                        <i class="bi bi-facebook"></i>Facebook
+                    </a>
+                </div>
+            </div>
+
+            <!-- Alisson Cuenca -->
+            <div class="col-md-5">
+                <div class="team-card">
+                    <img src="~/Foto/yo.png"
+                         alt="Alisson Cuenca"
+                         class="team-photo"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="team-placeholder" style="display:none;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="team-name">Alisson Cuenca</div>
+                    <div class="team-role"><i class="bi bi-code-slash me-1"></i>Desarrolladora Full Stack</div>
+                    <div class="team-tech">.NET Framework &bull; ASP.NET MVC &bull; Entity Framework</div>
+                    <a href="https://www.facebook.com/USUARIO_FACEBOOK" target="_blank" rel="noopener" class="btn-fb">
+                        <i class="bi bi-facebook"></i>Facebook
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

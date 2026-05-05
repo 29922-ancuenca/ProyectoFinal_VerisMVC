@@ -4,7 +4,7 @@
     ViewBag.Title = "Iniciar sesión";
 }
 
-<main aria-labelledby="title">
+<main aria-labelledby="title" class="container" style="max-width:900px; padding-top:2rem; padding-bottom:2rem;">
     <h2 id="title">@ViewBag.Title.</h2>
     <div class="row">
         <div class="col-md-8">
@@ -20,6 +20,13 @@
                         <div class="col-md-10">
                             @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
                             @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="row">
