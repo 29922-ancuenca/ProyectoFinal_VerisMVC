@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="402307bb2dd14ae4b70b456b20a6ebe6" Name="Diagram1" ZoomLevel="48">
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.AspNetUsers" Width="1.5" PointX="3" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.consultas" Width="1.5" PointX="10.5" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.especialidades" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.medicamentos" Width="1.5" PointX="10.5" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.medicos" Width="1.5" PointX="8.25" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.pacientes" Width="1.5" PointX="5.25" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoVeris_MVC_BDModel.recetas" Width="1.5" PointX="12.75" PointY="10.875" IsExpanded="true" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_medicos_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_pacientes_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_CONSULTA_REFERENCE_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_IdConsulta" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.IdMedico_FK" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_Especialidad" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.FK_RECETAS_REFERENCE_MEDICAME" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoVeris_MVC_BDModel.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

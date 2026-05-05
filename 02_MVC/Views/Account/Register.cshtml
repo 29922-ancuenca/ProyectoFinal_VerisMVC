@@ -3,47 +3,135 @@
     ViewBag.Title = "Registrarse";
 }
 
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-    {
-        @Html.AntiForgeryToken()
-        <h4>Cree una cuenta nueva.</h4>
-        <hr />
-        @Html.ValidationSummary("", new { @class = "text-danger" })
-        <div class="row">
-            @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="row">
-            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="row">
-            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="row">
-            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="offset-md-2 col-md-10">
-                <input type="submit" value="Registrarse" class="btn btn-outline-dark" />
-            </div>
-        </div>
+<style>
+    .veris-register-container {
+        max-width: 760px;
+        margin: 4rem auto;
     }
+
+    .veris-register-card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 2.5rem;
+        box-shadow: 0 12px 35px rgba(13, 110, 253, .15);
+        border: 1px solid #e2e8f0;
+    }
+
+    .veris-register-title {
+        font-weight: 800;
+        color: #0b1d3e;
+        text-align: center;
+        margin-bottom: .4rem;
+    }
+
+    .veris-register-subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: .95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .veris-register-divider {
+        width: 60px;
+        height: 4px;
+        background: #0d6efd;
+        border: none;
+        border-radius: 10px;
+        margin: 0 auto 2rem;
+        opacity: 1;
+    }
+
+    .veris-register-label {
+        font-weight: 700;
+        color: #0b1d3e;
+    }
+
+    .veris-register-input {
+        border-radius: 12px;
+        padding: .75rem 1rem;
+        border: 1px solid #cbd5e1;
+    }
+
+        .veris-register-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+        }
+
+    .veris-register-btn {
+        background: #0d6efd;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: .7rem 2.5rem;
+        font-weight: 700;
+        transition: all .2s ease;
+    }
+
+        .veris-register-btn:hover {
+            background: #0b5ed7;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13, 110, 253, .25);
+        }
+
+    .veris-login-link {
+        color: #0d6efd;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .veris-login-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<main class="container veris-register-container" aria-labelledby="title">
+    <div class="veris-register-card">
+
+        <h2 id="title" class="veris-register-title">Registrarse</h2>
+        <p class="veris-register-subtitle">Cree una cuenta nueva en el sistema</p>
+        <hr class="veris-register-divider" />
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary("", new { @class = "text-danger mb-3" })
+
+            <div class="row mb-3 align-items-center">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-3 col-form-label veris-register-label" })
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control veris-register-input", placeholder = "Ingrese su correo electrónico" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-3 col-form-label veris-register-label" })
+                <div class="col-md-9">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control veris-register-input", placeholder = "Ingrese su contraseña" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-3 col-form-label veris-register-label" })
+                <div class="col-md-9">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control veris-register-input", placeholder = "Confirme su contraseña" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <input type="submit" value="Registrarse" class="btn veris-register-btn" />
+            </div>
+
+            <p class="text-center mt-3 mb-0">
+                <a class="veris-login-link" href="@Url.Action("Login", "Account")">Ya tengo cuenta</a>
+            </p>
+        }
+
+    </div>
 </main>
 
 @section Scripts {

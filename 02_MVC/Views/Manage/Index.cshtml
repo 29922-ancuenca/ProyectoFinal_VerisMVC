@@ -1,89 +1,130 @@
-﻿@model _02_MVC.Models.IndexViewModel
-@{
-    ViewBag.Title = "Administrar";
+﻿@{
+    ViewBag.Title = "Proyecto VERIS";
 }
 
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
+<main class="container text-center mt-5">
+    <h1 class="text-primary">Bienvenido a Proyecto HUMANAS</h1>
+    <p class="text-muted">Sistema de gesti&oacute;n m&eacute;dica integral.</p>
 
-    <p class="text-success">@ViewBag.StatusMessage</p>
-    <div>
-        <h4>Cambiar la configuración de la cuenta</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>Contraseña:</dt>
-            <dd>
-                [
-                @if (Model.HasPassword)
-                {
-                    @Html.ActionLink("Cambiar la contraseña", "ChangePassword")
-                }
-                else
-                {
-                    @Html.ActionLink("Crear", "SetPassword")
-                }
-                ]
-            </dd>
-            <dt>Inicios de sesión externos:</dt>
-            <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
-            </dd>
-            @*
-                Los números de teléfono se pueden usar como una segunda fase de comprobación en un sistema de autenticación en dos fases.
-                
-                Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                    para obtener detalles sobre cómo configurar esta aplicación ASP.NET para que sea compatible con la autenticación en dos fases mediante SMS.
-                
-                Quite la marca de comentario del bloque siguiente después de configurar la autenticación en dos fases
-            *@
-            @*  
-                <dt>Número de teléfono:</dt>
-                <dd>
-                    @(Model.PhoneNumber ?? "None")
-                    @if (Model.PhoneNumber != null)
-                    {
-                        <br />
-                        <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                        using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>[<input type="submit" value="Quitar" class="btn-link" />]</text>
-                        }
-                    }
-                    else
-                    {
-                        <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                    }
-                </dd>
-            *@
-            <dt>Autenticación de dos factores:</dt>
-            <dd>
-                <p>
-                    No hay ningún proveedor de autenticación en dos fases configurado. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                    para obtener detalles sobre cómo configurar esta aplicación ASP.NET para que sea compatible con la autenticación en dos fases.
-                </p>
-                @*@if (Model.TwoFactor)
-                    {
-                        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>Habilitado
-                            <input type="submit" value="Deshabilitar" class="btn btn-link" />
-                            </text>
-                        }
-                    }
-                    else
-                    {
-                        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>Deshabilitada
-                            <input type="submit" value="Habilitar" class="btn btn-link" />
-                            </text>
-                        }
-                    }*@
-            </dd>
-        </dl>
-    </div>
+    <section class="container mt-5">
+        <div id="carouselVeris" class="carousel slide shadow-sm rounded" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner rounded">
+                <div class="carousel-item active">
+                    <img src="@Url.Content("~/Content/img/carrusel1.jpg")" class="d-block w-100 rounded carousel-img" alt="Instalaciones Veris">
+                </div>
+                <div class="carousel-item">
+                    <img src="@Url.Content("~/Content/img/carrusel2.jpg")" class="d-block w-100 rounded carousel-img" alt="Atenci&oacute;n M&eacute;dica">
+                </div>
+                <div class="carousel-item">
+                    <img src="@Url.Content("~/Content/img/carrusel3.jpg")" class="d-block w-100 rounded carousel-img" alt="Equipo Profesional">
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselVeris" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselVeris" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="mt-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "paciente")" class="text-decoration-none">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="info-title">M&oacute;dulo Paciente</div>
+                        <div class="info-text">Gestionar informaci&oacute;n de pacientes.</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "medico")" class="text-decoration-none">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-heart-pulse-fill"></i>
+                        </div>
+                        <div class="info-title">M&oacute;dulo M&eacute;dico</div>
+                        <div class="info-text">Gestionar informaci&oacute;n de m&eacute;dicos.</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-shield-fill-check"></i>
+                        </div>
+                        <div class="info-title">M&oacute;dulo Administrador</div>
+                        <div class="info-text">Acceso administrativo del sistema.</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- HERO + TARJETAS -->
+    <section class="hero-wrap mt-5">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-content">
+                    <div class="hero-card">
+                        <div class="hero-pill">
+                            <i class="bi bi-heart-fill"></i> Pediatr&iacute;a
+                        </div>
+
+                        <div class="hero-title">
+                            Cuidemos la salud de tus hijos
+                        </div>
+
+                        <div class="hero-sub">
+                            Atenci&oacute;n m&eacute;dica integral enfocada en prevenci&oacute;n, crecimiento y bienestar infantil,
+                            en un entorno c&aacute;lido y confiable para toda la familia.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row info-row g-4 mt-4">
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-clipboard2-heart"></i>
+                        </div>
+                        <div class="info-title">Control del ni&ntilde;o sano</div>
+                        <div class="info-text">Seguimiento del crecimiento y desarrollo infantil por etapas.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-camera-video"></i>
+                        </div>
+                        <div class="info-title">Telepediatr&iacute;a</div>
+                        <div class="info-text">Orientaci&oacute;n m&eacute;dica desde tu hogar de forma segura.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-shield-plus"></i>
+                        </div>
+                        <div class="info-title">Vacunas y prevenci&oacute;n</div>
+                        <div class="info-text">Protecci&oacute;n y educaci&oacute;n para una infancia saludable.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
