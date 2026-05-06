@@ -1,0 +1,89 @@
+@model IEnumerable<_02_MVC.Models.consultas>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .con-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
+
+    .con-table thead {
+        background: #0b1d3e;
+        color: #fff;
+    }
+
+    .con-table thead th {
+        font-weight: 600;
+        font-size: .83rem;
+        padding: .9rem 1rem;
+        border: none;
+    }
+
+    .con-table tbody tr:hover {
+        background: #f5f8ff;
+    }
+
+    .con-table td {
+        padding: .75rem 1rem;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+        font-size: .9rem;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">
+            <i class="bi bi-calendar2-check-fill text-primary me-2"></i>Consultas
+        </h2>
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico") || User.IsInRole("Paciente"))
+        {
+            <p class="mb-0">@Html.ActionLink("Nueva Consulta", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+        }
+    </div>
+
+    <div class="con-card card">
+        <div class="card-body p-0">
+            <table class="table con-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Diagn&oacute;stico</th>
+                        <th>Paciente</th>
+                        <th>M&eacute;dico</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.FechaConsulta.ToString("dd/MM/yyyy")</td>
+                            <td>@Html.DisplayFor(modelItem => item.HI)</td>
+                            <td>@Html.DisplayFor(modelItem => item.HF)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Diagnostico)</td>
+                            <td>@Html.DisplayFor(modelItem => item.pacientes.Nombre)</td>
+                            <td>@Html.DisplayFor(modelItem => item.medicos.Nombre)</td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.IdConsulta }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.IdConsulta }) |
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.IdConsulta })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

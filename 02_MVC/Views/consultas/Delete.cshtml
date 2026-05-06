@@ -1,0 +1,73 @@
+﻿@model _02_MVC.Models.consultas
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>consultas</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaConsulta)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaConsulta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HF)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HF)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Diagnostico)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Diagnostico)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pacientes.IdUsuario)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pacientes.IdUsuario)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.medicos.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.medicos.Nombre)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

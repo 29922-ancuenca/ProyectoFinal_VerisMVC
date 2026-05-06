@@ -170,6 +170,11 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\consultasController.cs" />
+    <Compile Include="Controllers\recetasController.cs" />
+    <Compile Include="Controllers\RolController.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\UserRoleViewModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -332,9 +337,24 @@
     <Content Include="Views\paciente\Details.cshtml" />
     <Content Include="Views\paciente\Edit.cshtml" />
     <Content Include="Views\paciente\Index.cshtml" />
+    <Content Include="Views\Rol\Index.cshtml" />
+    <Content Include="Views\Rol\AsignarRol.cshtml" />
+    <Content Include="Views\consultas\Create.cshtml" />
+    <Content Include="Views\consultas\Delete.cshtml" />
+    <Content Include="Views\consultas\Details.cshtml" />
+    <Content Include="Views\consultas\Edit.cshtml" />
+    <Content Include="Views\consultas\Index.cshtml" />
+    <Content Include="Views\recetas\Create.cshtml" />
+    <Content Include="Views\recetas\Delete.cshtml" />
+    <Content Include="Views\recetas\Details.cshtml" />
+    <Content Include="Views\recetas\Edit.cshtml" />
+    <Content Include="Views\recetas\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="imágenes\países\" />
+    <Folder Include="imágenes\sellos\" />
+    <Folder Include="imágenes\usuarios\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

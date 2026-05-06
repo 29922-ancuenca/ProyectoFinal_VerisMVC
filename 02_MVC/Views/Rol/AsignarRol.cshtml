@@ -1,0 +1,31 @@
+﻿@model _02_MVC.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Asignar Rol";
+}
+
+<main class="container my-5" style="max-width:500px">
+    <div class="card shadow-sm border-0 rounded-4 p-4">
+        <h2 class="fw-bold text-dark mb-1">Asignar Rol</h2>
+        <p class="text-muted">Usuario: <strong>@Model.Email</strong></p>
+        <hr />
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Seleccione un rol:</label>
+                @Html.DropDownList("rolSeleccionado",
+                    (SelectList)ViewBag.Roles,
+                    "-- Seleccione --",
+                    new { @class = "form-select rounded-3" })
+            </div>
+
+            <div class="d-flex gap-2 justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary rounded-pill px-4">Guardar Rol</button>
+                @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
+            </div>
+        }
+    </div>
+</main>

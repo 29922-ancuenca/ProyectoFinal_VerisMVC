@@ -10,6 +10,7 @@ using _02_MVC.Models;
 
 namespace _02_MVC.Controllers
 {
+    [Authorize(Roles = "SuperAdmin, Administrador, Paciente")]
     public class pacienteController : Controller
     {
         private ProyectoVeris_MVC_BDEntities db = new ProyectoVeris_MVC_BDEntities();
@@ -40,12 +41,11 @@ namespace _02_MVC.Controllers
         public ActionResult Create()
         {
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email");
+            CargarFotosPaciente();
             return View();
         }
 
         // POST: paciente/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IdPaciente,IdUsuario,Nombre,Cedula,Edad,Genero,Estatura,Peso,Foto")] pacientes pacientes)
@@ -74,12 +74,11 @@ namespace _02_MVC.Controllers
                 return HttpNotFound();
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", pacientes.IdUsuario);
+            CargarFotosPaciente(pacientes.Foto);
             return View(pacientes);
         }
 
         // POST: paciente/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IdPaciente,IdUsuario,Nombre,Cedula,Edad,Genero,Estatura,Peso,Foto")] pacientes pacientes)
@@ -95,6 +94,7 @@ namespace _02_MVC.Controllers
         }
 
         // GET: paciente/Delete/5
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -112,12 +112,24 @@ namespace _02_MVC.Controllers
         // POST: paciente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult DeleteConfirmed(int id)
         {
             pacientes pacientes = db.pacientes.Find(id);
             db.pacientes.Remove(pacientes);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private void CargarFotosPaciente(string seleccionada = null)
+        {
+            string carpeta = Server.MapPath("~/imágenes/usuarios/");
+            var imagenes = System.IO.Directory.Exists(carpeta)
+                ? System.IO.Directory.GetFiles(carpeta)
+                    .Select(f => System.IO.Path.GetFileName(f))
+                    .ToList()
+                : new List<string>();
+            ViewBag.FotosPaciente = new SelectList(imagenes, seleccionada);
         }
 
         protected override void Dispose(bool disposing)

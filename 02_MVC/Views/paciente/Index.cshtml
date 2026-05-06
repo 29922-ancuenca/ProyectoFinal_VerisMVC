@@ -5,12 +5,49 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<style>
+    .pac-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
+    .pac-table thead {
+        background: #0b1d3e;
+        color: #fff;
+    }
+
+    .pac-table thead th {
+        font-weight: 600;
+        font-size: .83rem;
+        padding: .9rem 1rem;
+        border: none;
+    }
+
+    .pac-table tbody tr:hover {
+        background: #f5f8ff;
+    }
+
+    .pac-table td {
+        padding: .75rem 1rem;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+        font-size: .9rem;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">
+            <i class="bi bi-people-fill text-primary me-2"></i>Pacientes
+        </h2>
+        <p class="mb-0">@Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+    </div>
+
+    <div class="pac-card card">
+        <div class="card-body p-0">
+            <table class="table pac-table align-middle mb-0">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Nombre)
@@ -60,7 +97,14 @@
             @Html.DisplayFor(modelItem => item.Peso)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Foto)
+            @if (!string.IsNullOrEmpty(item.Foto))
+            {
+                <img src="~/imágenes/usuarios/@item.Foto" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border:2px solid #e2e8f0;" alt="foto" />
+            }
+            else
+            {
+                <i class="bi bi-person-circle" style="font-size:2rem; color:#0d6efd;"></i>
+            }
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
@@ -73,4 +117,7 @@
     </tr>
 }
 
-</table>
+            </table>
+        </div>
+    </div>
+</div>

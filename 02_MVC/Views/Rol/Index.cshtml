@@ -1,0 +1,98 @@
+﻿@model IEnumerable<_02_MVC.Models.UserRoleViewModel>
+
+@{
+    ViewBag.Title = "Gestión de Roles";
+}
+
+<style>
+    .rol-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
+
+    .rol-table thead {
+        background: #f8f9fa;
+        color: #0b1d3e;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .rol-table thead th {
+        font-weight: 700;
+        font-size: .85rem;
+        padding: 1rem 1.25rem;
+        border: none;
+    }
+
+    .rol-table tbody tr:hover {
+        background: #f5f8ff;
+    }
+
+    .rol-table td {
+        padding: .85rem 1.25rem;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+        font-size: .9rem;
+    }
+</style>
+
+<main class="container my-5">
+
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-shield-lock-fill text-primary me-2"></i>Gesti&oacute;n de Roles
+        </h2>
+        <p class="text-muted mb-0">Asigna o quita roles a los usuarios del sistema</p>
+        <hr class="mt-3" />
+    </div>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-info text-center shadow-sm">@TempData["Mensaje"]</div>
+    }
+
+    <div class="rol-card card">
+        <div class="card-body p-0">
+            <table class="table rol-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Rol Actual</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Email</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Roles))
+                                {
+                                    <span class="badge bg-primary">@item.Roles</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin rol asignado</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @Html.ActionLink("Asignar Rol", "AsignarRol", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-primary rounded-pill me-1" })
+
+                                @using (Html.BeginForm("QuitarRol", "Rol", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"
+                                            onclick="return confirm('&iquest;Quitar todos los roles a este usuario?');">
+                                        Quitar Rol
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

@@ -10,6 +10,7 @@ using _02_MVC.Models;
 
 namespace _02_MVC.Controllers
 {
+    [Authorize(Roles = "SuperAdmin, Administrador, Medico")]
     public class medicoController : Controller
     {
         private ProyectoVeris_MVC_BDEntities db = new ProyectoVeris_MVC_BDEntities();
@@ -17,7 +18,7 @@ namespace _02_MVC.Controllers
         // GET: medico
         public ActionResult Index()
         {
-            var medicos = db.medicos.Include(m => m.AspNetUsers).Include(m => m.especialidades);
+            var medicos = db.medicos.Include(m => m.AspNetUsers);
             return View(medicos.ToList());
         }
 
@@ -39,17 +40,16 @@ namespace _02_MVC.Controllers
         // GET: medico/Create
         public ActionResult Create()
         {
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email");
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion");
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email");
+            CargarFotosMedico();
             return View();
         }
 
         // POST: medico/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "IdMedico,Nombre,IdEspecialidad,IdUsuario,Foto")] medicos medicos)
+        public ActionResult Create([Bind(Include = "IdMedico,IdUsuario,IdEspecialidad,Nombre,Foto")] medicos medicos)
         {
             if (ModelState.IsValid)
             {
@@ -58,8 +58,8 @@ namespace _02_MVC.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion", medicos.IdEspecialidad);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             return View(medicos);
         }
 
@@ -75,17 +75,16 @@ namespace _02_MVC.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion", medicos.IdEspecialidad);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
+            CargarFotosMedico(medicos.Foto);
             return View(medicos);
         }
 
         // POST: medico/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "IdMedico,Nombre,IdEspecialidad,IdUsuario,Foto")] medicos medicos)
+        public ActionResult Edit([Bind(Include = "IdMedico,IdUsuario,IdEspecialidad,Nombre,Foto")] medicos medicos)
         {
             if (ModelState.IsValid)
             {
@@ -93,12 +92,13 @@ namespace _02_MVC.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion", medicos.IdEspecialidad);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             return View(medicos);
         }
 
         // GET: medico/Delete/5
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -116,12 +116,24 @@ namespace _02_MVC.Controllers
         // POST: medico/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult DeleteConfirmed(int id)
         {
             medicos medicos = db.medicos.Find(id);
             db.medicos.Remove(medicos);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private void CargarFotosMedico(string seleccionada = null)
+        {
+            string carpeta = Server.MapPath("~/imágenes/sellos/");
+            var imagenes = System.IO.Directory.Exists(carpeta)
+                ? System.IO.Directory.GetFiles(carpeta)
+                    .Select(f => System.IO.Path.GetFileName(f))
+                    .ToList()
+                : new List<string>();
+            ViewBag.FotosMedico = new SelectList(imagenes, seleccionada);
         }
 
         protected override void Dispose(bool disposing)

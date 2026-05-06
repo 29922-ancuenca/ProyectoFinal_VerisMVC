@@ -1,0 +1,77 @@
+@model IEnumerable<_02_MVC.Models.recetas>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .rec-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
+    .rec-table thead {
+        background: #0b1d3e;
+        color: #fff;
+    }
+    .rec-table thead th {
+        font-weight: 600;
+        font-size: .83rem;
+        padding: .9rem 1rem;
+        border: none;
+    }
+    .rec-table tbody tr:hover { background: #f5f8ff; }
+    .rec-table td {
+        padding: .75rem 1rem;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+        font-size: .9rem;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">
+            <i class="bi bi-file-earmark-medical-fill text-primary me-2"></i>Recetas
+        </h2>
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
+        {
+            <p class="mb-0">@Html.ActionLink("Nueva Receta", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+        }
+    </div>
+
+    <div class="rec-card card">
+        <div class="card-body p-0">
+            <table class="table rec-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Diagn&oacute;stico</th>
+                        <th>Medicamento</th>
+                        <th>Cantidad</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.consultas.Diagnostico)</td>
+                            <td>@Html.DisplayFor(modelItem => item.medicamentos.Nombre)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                            <td>
+                                @Html.ActionLink("Details", "Details", new { id = item.IdReceta })
+                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
+                                {
+                                    @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdReceta })
+                                    @: | @Html.ActionLink("Delete", "Delete", new { id = item.IdReceta })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

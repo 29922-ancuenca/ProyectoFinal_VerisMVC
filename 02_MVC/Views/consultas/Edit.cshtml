@@ -1,0 +1,96 @@
+﻿@model _02_MVC.Models.consultas
+
+@{
+    ViewBag.Title = "Editar Consulta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .edit-card { border: none; border-radius: 18px; box-shadow: 0 6px 28px rgba(0,0,0,.08); overflow: hidden; max-width: 680px; margin: 2rem auto; }
+    .edit-card-header { background: #0b1d3e; color: #fff; padding: 1.2rem 2rem; }
+    .edit-card-header h4 { margin: 0; font-weight: 700; font-size: 1.1rem; }
+    .edit-card .card-body { padding: 2rem; }
+    .edit-card .form-group label { font-weight: 600; color: #0b1d3e; font-size: .88rem; }
+    .edit-card .form-control { border-radius: 10px; border: 1px solid #cbd5e1; }
+    .edit-card .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 .2rem rgba(13,110,253,.15); }
+    .btn-guardar { background: #0d6efd; color: #fff; border: none; border-radius: 50px; padding: .6rem 2rem; font-weight: 700; }
+    .btn-guardar:hover { background: #0b5ed7; color: #fff; }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="edit-card card">
+        <div class="edit-card-header">
+            <h4><i class="bi bi-pencil-square me-2"></i>Editar Consulta</h4>
+        </div>
+        <div class="card-body">
+    <div class="form-horizontal">
+        <h4 style="display:none">consultas</h4>
+        <hr style="display:none" />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.IdConsulta)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdMedico, "IdMedico", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("IdMedico", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdMedico, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdPaciente, "IdPaciente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("IdPaciente", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdPaciente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaConsulta, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaConsulta, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaConsulta, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HI, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HI, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HI, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HF, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HF, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HF, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Diagnostico, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Diagnostico, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Diagnostico, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-guardar" />
+                @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4 ms-2" })
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

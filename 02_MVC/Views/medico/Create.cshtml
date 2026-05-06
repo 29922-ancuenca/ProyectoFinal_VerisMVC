@@ -1,65 +1,100 @@
-﻿@model _02_MVC.Models.medicos
+@model _02_MVC.Models.medicos
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nuevo Médico";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<style>
+    .form-card {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 6px 28px rgba(0,0,0,.08);
+        overflow: hidden;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+    .form-card-header {
+        background: #0b1d3e;
+        color: #fff;
+        padding: 1.4rem 2rem;
+    }
+    .form-card-header h4 { margin: 0; font-weight: 700; font-size: 1.15rem; }
+    .form-card-body { padding: 2rem; background: #fff; }
+    .form-label-custom { font-weight: 600; color: #0b1d3e; font-size: .88rem; margin-bottom: .3rem; }
+    .form-control-custom { border-radius: 10px; border: 1px solid #cbd5e1; padding: .65rem 1rem; font-size: .9rem; }
+    .form-control-custom:focus { border-color: #0d6efd; box-shadow: 0 0 0 .2rem rgba(13,110,253,.15); }
+    .btn-guardar { background: #0d6efd; color: #fff; border: none; border-radius: 50px; padding: .6rem 2rem; font-weight: 700; transition: all .2s ease; }
+    .btn-guardar:hover { background: #0b5ed7; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(13,110,253,.3); }
+</style>
 
+<div class="container my-5">
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>medicos</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-card card">
+            <div class="form-card-header">
+                <h4><i class="bi bi-person-badge-fill me-2"></i>Nuevo M&eacute;dico</h4>
+            </div>
+            <div class="form-card-body">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Nombre</label>
+                    @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control form-control-custom" } })
+                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Especialidad</label>
+                    @Html.DropDownList("IdEspecialidad", null, "-- Seleccione una especialidad --", new { @class = "form-control form-control-custom" })
+                    @Html.ValidationMessageFor(model => model.IdEspecialidad, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Usuario</label>
+                    @Html.DropDownList("IdUsuario", null, "-- Seleccione un usuario --", new { @class = "form-control form-control-custom" })
+                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label-custom">Foto</label>
+                    @Html.DropDownListFor(model => model.Foto,
+                        (SelectList)ViewBag.FotosMedico,
+                        "-- Seleccione una foto --",
+                        new { @class = "form-control form-control-custom", onchange = "previsualizarFoto(this.value)" })
+                    @Html.ValidationMessageFor(model => model.Foto, "", new { @class = "text-danger small" })
+                    <img id="fotoPreview" src="" alt="Vista previa"
+                         style="max-width:100px; margin-top:10px; border-radius:50%; border:2px solid #e2e8f0; display:none;" />
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-guardar">
+                        <i class="bi bi-check-circle-fill me-1"></i>Guardar
+                    </button>
+                    @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
+                </div>
+
             </div>
         </div>
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdEspecialidad, "IdEspecialidad", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdEspecialidad", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdEspecialidad, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdUsuario, "IdUsuario", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Foto, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Foto, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Foto, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function previsualizarFoto(nombre) {
+            var img = document.getElementById('fotoPreview');
+            if (nombre) {
+                img.src = '/imágenes/sellos/' + nombre;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+        }
+    </script>
 }

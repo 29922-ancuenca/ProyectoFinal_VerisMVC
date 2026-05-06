@@ -1,7 +1,7 @@
-@model _02_MVC.Models.medicos
+@model _02_MVC.Models.recetas
 
 @{
-    ViewBag.Title = "Detalle Médico";
+    ViewBag.Title = "Detalle Receta";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,33 +19,28 @@
 <div class="container my-5">
     <div class="det-card card">
         <div class="det-card-header">
-            <h4><i class="bi bi-person-badge-fill me-2"></i>Detalle del M&eacute;dico</h4>
+            <h4><i class="bi bi-file-earmark-medical-fill me-2"></i>Detalle de Receta</h4>
         </div>
         <div class="det-card-body">
 
-            @if (!string.IsNullOrEmpty(Model.Foto))
-            {
-                <div class="text-center mb-4">
-                    <img src='@("/imágenes/sellos/" + Model.Foto)'
-                         style="width:90px; height:90px; object-fit:cover; border-radius:50%; border:3px solid #e2e8f0;" alt="foto" />
-                </div>
-            }
-
             <div class="det-row">
-                <span class="det-label">Nombre</span>
-                <span class="det-value">@Model.Nombre</span>
+                <span class="det-label">Diagn&oacute;stico</span>
+                <span class="det-value">@Model.consultas.Diagnostico</span>
             </div>
             <div class="det-row">
-                <span class="det-label">Especialidad</span>
-                <span class="det-value">@Model.especialidades.Descripcion</span>
+                <span class="det-label">Medicamento</span>
+                <span class="det-value">@Model.medicamentos.Nombre</span>
             </div>
             <div class="det-row">
-                <span class="det-label">Email</span>
-                <span class="det-value">@Model.AspNetUsers.Email</span>
+                <span class="det-label">Cantidad</span>
+                <span class="det-value">@Model.Cantidad</span>
             </div>
 
             <div class="d-flex gap-2 mt-4">
-                @Html.ActionLink("Editar", "Edit", new { id = Model.IdMedico }, new { @class = "btn btn-primary rounded-pill px-4" })
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
+                {
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.IdReceta }, new { @class = "btn btn-primary rounded-pill px-4" })
+                }
                 @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
             </div>
         </div>

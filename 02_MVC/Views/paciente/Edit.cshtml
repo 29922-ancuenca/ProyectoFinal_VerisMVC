@@ -1,20 +1,34 @@
 ﻿@model _02_MVC.Models.pacientes
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar Paciente";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
-
+<style>
+    .edit-card { border: none; border-radius: 18px; box-shadow: 0 6px 28px rgba(0,0,0,.08); overflow: hidden; max-width: 680px; margin: 2rem auto; }
+    .edit-card-header { background: #0b1d3e; color: #fff; padding: 1.2rem 2rem; }
+    .edit-card-header h4 { margin: 0; font-weight: 700; font-size: 1.1rem; }
+    .edit-card .card-body { padding: 2rem; }
+    .edit-card .form-group label { font-weight: 600; color: #0b1d3e; font-size: .88rem; }
+    .edit-card .form-control { border-radius: 10px; border: 1px solid #cbd5e1; }
+    .edit-card .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 .2rem rgba(13,110,253,.15); }
+    .btn-guardar { background: #0d6efd; color: #fff; border: none; border-radius: 50px; padding: .6rem 2rem; font-weight: 700; }
+    .btn-guardar:hover { background: #0b5ed7; color: #fff; }
+</style>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
+    <div class="edit-card card">
+        <div class="edit-card-header">
+            <h4><i class="bi bi-pencil-square me-2"></i>Editar Paciente</h4>
+        </div>
+        <div class="card-body">
     <div class="form-horizontal">
-        <h4>pacientes</h4>
-        <hr />
+        <h4 style="display:none">pacientes</h4>
+        <hr style="display:none" />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.IdPaciente)
 
@@ -77,23 +91,40 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Foto, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Foto, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.Foto,
+                    (SelectList)ViewBag.FotosPaciente,
+                    "-- Seleccione una foto --",
+                    new { @class = "form-control", onchange = "previsualizarFoto(this.value)" })
                 @Html.ValidationMessageFor(model => model.Foto, "", new { @class = "text-danger" })
+                <img id="fotoPreview"
+                     src="@(Model.Foto != null ? "/imágenes/usuarios/" + Model.Foto : "")"
+                     alt="Vista previa"
+                     style="max-width:120px; margin-top:8px; border-radius:8px; @(Model.Foto != null ? "" : "display:none;")" />
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Guardar" class="btn btn-guardar" />
+                @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4 ms-2" })
             </div>
+        </div>
+    </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function previsualizarFoto(nombre) {
+            var img = document.getElementById('fotoPreview');
+            if (nombre) {
+                img.src = '/imágenes/usuarios/' + nombre;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+        }
+    </script>
 }

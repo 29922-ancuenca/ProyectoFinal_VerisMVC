@@ -56,9 +56,10 @@ namespace _02_MVC.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, string modulo)
         {
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Modulo = modulo;
             return View();
         }
 
@@ -67,12 +68,12 @@ namespace _02_MVC.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, string modulo)
         {
+            ViewBag.Modulo = modulo;
+
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             var usuario = await UserManager.FindByNameAsync(model.UserName);
             if (usuario == null || usuario.Email != model.Email)
@@ -81,10 +82,35 @@ namespace _02_MVC.Controllers
                 return View(model);
             }
 
+            // Obtener el rol del usuario
+            var roles = await UserManager.GetRolesAsync(usuario.Id);
+            string rolUsuario = roles.FirstOrDefault();
+
+            // Validar que el rol coincide con el módulo seleccionado
+            if (!string.IsNullOrEmpty(modulo))
+            {
+                bool accesoValido = false;
+
+                if (modulo == "Medico" && rolUsuario == "Medico")                                              accesoValido = true;
+                else if (modulo == "Paciente" && rolUsuario == "Paciente")                                     accesoValido = true;
+                else if (modulo == "Administrador" && (rolUsuario == "Administrador" || rolUsuario == "SuperAdmin")) accesoValido = true;
+                else if (rolUsuario == "SuperAdmin")                                                           accesoValido = true;
+
+                if (!accesoValido)
+                {
+                    ModelState.AddModelError("", $"No puede acceder al módulo '{modulo}'. Su rol es '{rolUsuario}'.");
+                    return View(model);
+                }
+            }
+
             var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
+                    Session["User"]     = usuario;
+                    Session["UserId"]   = usuario.Id;
+                    Session["UserName"] = usuario.UserName;
+                    Session["Email"]    = usuario.Email;
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -92,7 +118,7 @@ namespace _02_MVC.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Intento de inicio de sesión no válido.");
+                    ModelState.AddModelError("", "Contraseña incorrecta.");
                     return View(model);
             }
         }
@@ -397,6 +423,7 @@ namespace _02_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            Session["User"] = null;
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }

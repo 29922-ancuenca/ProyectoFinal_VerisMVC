@@ -99,6 +99,14 @@
             @Html.ValidationSummary("", new { @class = "text-danger mb-3" })
 
             <div class="row mb-3 align-items-center">
+                @Html.LabelFor(m => m.NombreUsuario, new { @class = "col-md-3 col-form-label veris-register-label" })
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.NombreUsuario, new { @class = "form-control veris-register-input", placeholder = "Ingrese su nombre de usuario" })
+                    @Html.ValidationMessageFor(m => m.NombreUsuario, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
                 @Html.LabelFor(m => m.Email, new { @class = "col-md-3 col-form-label veris-register-label" })
                 <div class="col-md-9">
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control veris-register-input", placeholder = "Ingrese su correo electrónico" })

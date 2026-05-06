@@ -93,13 +93,21 @@
         <div class="col-md-8 mx-auto">
             <section id="loginForm" class="veris-login-card">
 
-                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl, modulo = ViewBag.Modulo }, FormMethod.Post, new { role = "form" }))
                 {
                     @Html.AntiForgeryToken()
 
                     <h2 id="title" class="veris-login-title">@ViewBag.Title</h2>
                     <p class="veris-login-subtitle">Utilice una cuenta local para iniciar sesi&oacute;n.</p>
                     <hr class="veris-login-divider" />
+
+                    if (ViewBag.Modulo != null)
+                    {
+                        <div class="alert alert-info text-center mb-3">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            <strong>M&oacute;dulo seleccionado:</strong> @ViewBag.Modulo
+                        </div>
+                    }
 
                     @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
@@ -114,7 +122,7 @@
                     <div class="row mb-3 align-items-center">
                         @Html.LabelFor(m => m.Email, new { @class = "col-md-3 col-form-label veris-login-label" })
                         <div class="col-md-9">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control veris-login-input", placeholder = "Ingrese su correo electr&oacute;nico" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control veris-login-input", placeholder = "Ingrese su correo electrónico" })
                             @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -122,7 +130,7 @@
                     <div class="row mb-3 align-items-center">
                         @Html.LabelFor(m => m.Password, new { @class = "col-md-3 col-form-label veris-login-label" })
                         <div class="col-md-9">
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control veris-login-input", placeholder = "Ingrese su contrase&ntilde;a" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control veris-login-input", placeholder = "Ingrese su contraseña" })
                             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                         </div>
                     </div>
