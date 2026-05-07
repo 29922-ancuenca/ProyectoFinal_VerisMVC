@@ -6,62 +6,24 @@
 }
 
 <style>
-    .form-card {
-        border: none;
-        border-radius: 18px;
-        box-shadow: 0 6px 28px rgba(0,0,0,.08);
-        overflow: hidden;
-        max-width: 680px;
-        margin: 0 auto;
-    }
-    .form-card-header {
-        background: #0b1d3e;
-        color: #fff;
-        padding: 1.4rem 2rem;
-    }
-    .form-card-header h4 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 1.15rem;
-    }
-    .form-card-body {
-        padding: 2rem;
-        background: #fff;
-    }
-    .form-label-custom {
-        font-weight: 600;
-        color: #0b1d3e;
-        font-size: .88rem;
-        margin-bottom: .3rem;
-    }
-    .form-control-custom {
-        border-radius: 10px;
-        border: 1px solid #cbd5e1;
-        padding: .65rem 1rem;
-        font-size: .9rem;
-    }
-    .form-control-custom:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 .2rem rgba(13,110,253,.15);
-    }
-    .btn-guardar {
-        background: #0d6efd;
-        color: #fff;
-        border: none;
-        border-radius: 50px;
-        padding: .6rem 2rem;
-        font-weight: 700;
-        transition: all .2s ease;
-    }
-    .btn-guardar:hover {
-        background: #0b5ed7;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(13,110,253,.3);
-    }
+    .form-card { border:none; border-radius:18px; box-shadow:0 6px 28px rgba(0,0,0,.08); overflow:hidden; max-width:680px; margin:0 auto; }
+    .form-card-header { background:#0b1d3e; color:#fff; padding:1.4rem 2rem; }
+    .form-card-header h4 { margin:0; font-weight:700; font-size:1.15rem; }
+    .form-card-body { padding:2rem; background:#fff; }
+    .form-label-custom { font-weight:600; color:#0b1d3e; font-size:.88rem; margin-bottom:.3rem; display:block; }
+    .form-control-custom { border-radius:10px; border:1px solid #cbd5e1; padding:.65rem 1rem; font-size:.9rem; width:100%; }
+    .form-control-custom:focus { border-color:#0d6efd; box-shadow:0 0 0 .2rem rgba(13,110,253,.15); outline:none; }
+    .form-control-custom:disabled { background:#f8fafc; color:#64748b; }
+    .btn-guardar { background:#0d6efd; color:#fff; border:none; border-radius:50px; padding:.6rem 2rem; font-weight:700; transition:all .2s ease; }
+    .btn-guardar:hover { background:#0b5ed7; transform:translateY(-1px); box-shadow:0 6px 16px rgba(13,110,253,.3); }
+    .step-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; background:#0d6efd; color:#fff; border-radius:50%; font-size:.72rem; font-weight:700; margin-right:6px; }
+    .diagnostico-box { background:#f0f4ff; border:1px solid #c7d7fd; border-radius:10px; padding:.7rem 1rem; font-size:.9rem; color:#1e3a8a; font-weight:500; min-height:42px; }
+    .input-diagnostico { border-radius:10px; border:1.5px solid #0d6efd; padding:.65rem 1rem; font-size:.9rem; width:100%; background:#f0f4ff; color:#1e3a8a; resize:none; }
+    .input-diagnostico:focus { outline:none; box-shadow:0 0 0 .2rem rgba(13,110,253,.15); }
+    .badge-pendiente { font-size:.75rem; background:#fef3c7; color:#92400e; border-radius:6px; padding:.2rem .5rem; margin-left:.4rem; }
 </style>
 
 <div class="container my-5">
-
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -74,18 +36,54 @@
 
                 @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
+                @Html.HiddenFor(model => model.IdConsulta)
+
+                @* Paso 1: Paciente *@
                 <div class="mb-3">
-                    <label class="form-label-custom">Consulta</label>
-                    @Html.DropDownList("IdConsulta", null, "-- Seleccione una consulta --", new { @class = "form-control form-control-custom" })
-                    @Html.ValidationMessageFor(model => model.IdConsulta, "", new { @class = "text-danger small" })
+                    <label class="form-label-custom">
+                        <span class="step-badge">1</span>Paciente
+                    </label>
+                    <select id="ddlPaciente" class="form-control form-control-custom">
+                        <option value="">-- Seleccione un paciente --</option>
+                        @foreach (SelectListItem p in ViewBag.Pacientes)
+                        {
+                            <option value="@p.Value">@p.Text</option>
+                        }
+                    </select>
                 </div>
 
+                @* Paso 2: Consulta *@
                 <div class="mb-3">
-                    <label class="form-label-custom">Medicamento</label>
+                    <label class="form-label-custom">
+                        <span class="step-badge">2</span>Consulta (Fecha y Hora)
+                    </label>
+                    <select id="ddlConsulta" class="form-control form-control-custom" disabled>
+                        <option value="">-- Primero seleccione un paciente --</option>
+                    </select>
+                </div>
+
+                @* Paso 3: Diagnóstico (editable) *@
+                <div class="mb-3">
+                    <label class="form-label-custom">
+                        <span class="step-badge">3</span>Diagn&oacute;stico
+                        <span class="badge-pendiente" id="badgePendiente" style="display:none;">Pendiente &mdash; ingresa el diagn&oacute;stico</span>
+                    </label>
+                    <textarea id="txtDiagnostico" name="Diagnostico" rows="2"
+                              class="input-diagnostico"
+                              placeholder="Se cargar&aacute; al seleccionar la consulta..."
+                              disabled></textarea>
+                </div>
+
+                @* Paso 4: Medicamento *@
+                <div class="mb-3">
+                    <label class="form-label-custom">
+                        <span class="step-badge">4</span>Medicamento
+                    </label>
                     @Html.DropDownList("IdMedicamento", null, "-- Seleccione un medicamento --", new { @class = "form-control form-control-custom" })
                     @Html.ValidationMessageFor(model => model.IdMedicamento, "", new { @class = "text-danger small" })
                 </div>
 
+                @* Cantidad *@
                 <div class="mb-4">
                     <label class="form-label-custom">Cantidad</label>
                     @Html.EditorFor(model => model.Cantidad, new { htmlAttributes = new { @class = "form-control form-control-custom" } })
@@ -102,9 +100,62 @@
             </div>
         </div>
     }
-
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $('#ddlPaciente').on('change', function () {
+            var idPaciente = $(this).val();
+            var ddlConsulta = $('#ddlConsulta');
+            var hiddenConsulta = $('#IdConsulta');
+
+            ddlConsulta.empty().append('<option value="">-- Cargando... --</option>').prop('disabled', true);
+            $('#txtDiagnostico').val('').prop('disabled', true);
+            $('#badgePendiente').hide();
+            hiddenConsulta.val('');
+
+            if (!idPaciente) {
+                ddlConsulta.empty().append('<option value="">-- Primero seleccione un paciente --</option>');
+                return;
+            }
+
+            $.getJSON('@Url.Action("GetConsultas", "recetas")', { idPaciente: idPaciente }, function (data) {
+                ddlConsulta.empty().append('<option value="">-- Seleccione una consulta --</option>');
+                if (data.length === 0) {
+                    ddlConsulta.append('<option value="">Sin consultas registradas</option>');
+                } else {
+                    $.each(data, function (i, item) {
+                        ddlConsulta.append($('<option>', { value: item.id, text: item.texto }));
+                    });
+                    ddlConsulta.prop('disabled', false);
+                }
+            });
+        });
+
+        $('#ddlConsulta').on('change', function () {
+            var idConsulta = $(this).val();
+            var hiddenConsulta = $('#IdConsulta');
+            var txtDiag = $('#txtDiagnostico');
+
+            txtDiag.val('').prop('disabled', true);
+            $('#badgePendiente').hide();
+            hiddenConsulta.val('');
+
+            if (!idConsulta) return;
+
+            hiddenConsulta.val(idConsulta);
+
+            $.getJSON('@Url.Action("GetDiagnostico", "recetas")', { idConsulta: idConsulta }, function (data) {
+                txtDiag.prop('disabled', false);
+                if (!data.diagnostico || data.diagnostico === 'Pendiente') {
+                    txtDiag.val('');
+                    $('#badgePendiente').show();
+                } else {
+                    txtDiag.val(data.diagnostico);
+                    $('#badgePendiente').hide();
+                }
+            });
+        });
+    </script>
 }

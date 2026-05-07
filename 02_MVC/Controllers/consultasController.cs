@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using _02_MVC.Models;
+using _02_MVC.Helpers;
 using Microsoft.AspNet.Identity;
 
 namespace _02_MVC.Controllers
@@ -19,24 +20,45 @@ namespace _02_MVC.Controllers
         // GET: consultas
         public ActionResult Index()
         {
-            IQueryable<consultas> consultas = db.consultas.Include(c => c.pacientes).Include(c => c.medicos);
+            var usuario = SessionHelper.CurrentUser;
+            if (usuario == null) return RedirectToAction("Login", "Account");
 
-            if (User.IsInRole("Medico"))
+            List<consultas> lista;
+
+            if (User.IsInRole("SuperAdmin"))
             {
-                string userId = User.Identity.GetUserId();
-                var medico = db.medicos.FirstOrDefault(m => m.IdUsuario == userId);
+                lista = db.consultas
+                    .Include(c => c.pacientes)
+                    .Include(c => c.medicos)
+                    .ToList();
+            }
+            else if (User.IsInRole("Medico"))
+            {
+                var medico = db.medicos.FirstOrDefault(m => m.IdUsuario == usuario.Id);
                 if (medico == null) return View(new List<consultas>());
-                consultas = consultas.Where(c => c.IdMedico == medico.IdMedico);
+                lista = db.consultas
+                    .Include(c => c.pacientes)
+                    .Include(c => c.medicos)
+                    .Where(c => c.IdMedico == medico.IdMedico)
+                    .ToList();
             }
             else if (User.IsInRole("Paciente"))
             {
-                string userId = User.Identity.GetUserId();
-                var paciente = db.pacientes.FirstOrDefault(p => p.IdUsuario == userId);
+                var paciente = db.pacientes.FirstOrDefault(p => p.IdUsuario == usuario.Id);
                 if (paciente == null) return View(new List<consultas>());
-                consultas = consultas.Where(c => c.IdPaciente == paciente.IdPaciente);
+                lista = db.consultas
+                    .Include(c => c.pacientes)
+                    .Include(c => c.medicos)
+                    .Where(c => c.IdPaciente == paciente.IdPaciente)
+                    .ToList();
+            }
+            else
+            {
+                lista = new List<consultas>();
             }
 
-            return View(consultas.ToList());
+            ViewBag.TotalEnBD = db.consultas.Count();
+            return View(lista);
         }
 
         // GET: consultas/Details/5

@@ -1,0 +1,37 @@
+@model _02_MVC.Models.medicamentos
+
+@{
+    ViewBag.Title = "Detalle Medicamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .det-card { border:none; border-radius:18px; box-shadow:0 6px 28px rgba(0,0,0,.08); overflow:hidden; max-width:560px; margin:0 auto; }
+    .det-card-header { background:#0b1d3e; color:#fff; padding:1.4rem 2rem; }
+    .det-card-header h4 { margin:0; font-weight:700; font-size:1.15rem; }
+    .det-card-body { padding:2rem; background:#fff; }
+    .det-label { font-size:.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.1rem; }
+    .det-value { font-size:1rem; color:#0f172a; font-weight:500; margin-bottom:1.2rem; }
+    .badge-tipo { background:#fef3c7; color:#92400e; border-radius:50px; padding:.3rem .9rem; font-size:.85rem; font-weight:600; }
+</style>
+
+<div class="container my-5">
+    <div class="det-card card">
+        <div class="det-card-header">
+            <h4><i class="bi bi-capsule me-2"></i>Detalle del Medicamento</h4>
+        </div>
+        <div class="det-card-body">
+
+            <p class="det-label">Nombre</p>
+            <p class="det-value">@Model.Nombre</p>
+
+            <p class="det-label">Tipo</p>
+            <p class="det-value"><span class="badge-tipo">@Model.Tipo</span></p>
+
+            <div class="d-flex gap-2 mt-3">
+                @Html.ActionLink("Editar", "Edit", new { id = Model.IdMedicamento }, new { @class = "btn btn-primary rounded-pill px-4" })
+                @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
+            </div>
+        </div>
+    </div>
+</div>

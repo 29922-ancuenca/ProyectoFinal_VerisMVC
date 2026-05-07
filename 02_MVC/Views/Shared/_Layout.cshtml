@@ -177,6 +177,10 @@
                     {
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "paciente")"><i class="bi bi-people-fill me-1"></i>Pacientes</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "medico")"><i class="bi bi-person-badge-fill me-1"></i>M&eacute;dicos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "especialidades")"><i class="bi bi-award-fill me-1"></i>Especialidades</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "medicamentos")"><i class="bi bi-capsule me-1"></i>Medicamentos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "consultas")"><i class="bi bi-calendar2-check-fill me-1"></i>Consultas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "recetas")"><i class="bi bi-file-earmark-medical-fill me-1"></i>Recetas</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Rol")"><i class="bi bi-shield-lock-fill me-1"></i>Gesti&oacute;n de Roles</a></li>
                     }
                     else if (User.IsInRole("Administrador"))
@@ -193,8 +197,9 @@
                     else if (User.IsInRole("Paciente"))
                     {
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "paciente")"><i class="bi bi-person-circle me-1"></i>Mis Datos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "consultas")"><i class="bi bi-calendar2-check-fill me-1"></i>Consultas</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "recetas")"><i class="bi bi-file-earmark-medical-fill me-1"></i>Recetas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "AgendarCita")"><i class="bi bi-calendar-plus-fill me-1"></i>Agendar Cita</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "consultas")"><i class="bi bi-calendar2-check-fill me-1"></i>Mis Consultas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "recetas")"><i class="bi bi-file-earmark-medical-fill me-1"></i>Mis Recetas</a></li>
                     }
 
                 </ul>

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using _02_MVC.Models;
+using _02_MVC.Helpers;
 
 namespace _02_MVC.Controllers
 {
@@ -18,7 +19,16 @@ namespace _02_MVC.Controllers
         // GET: medico
         public ActionResult Index()
         {
-            var medicos = db.medicos.Include(m => m.AspNetUsers);
+            var usuario = SessionHelper.CurrentUser;
+            if (usuario == null) return RedirectToAction("Login", "Account");
+
+            IQueryable<medicos> medicos = db.medicos.Include(m => m.AspNetUsers);
+
+            if (!User.IsInRole("SuperAdmin") && User.IsInRole("Medico"))
+            {
+                medicos = medicos.Where(m => m.IdUsuario == usuario.Id);
+            }
+
             return View(medicos.ToList());
         }
 

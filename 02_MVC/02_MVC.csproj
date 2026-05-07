@@ -171,6 +171,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\consultasController.cs" />
+    <Compile Include="Controllers\especialidadesController.cs" />
+    <Compile Include="Controllers\medicamentosController.cs" />
+    <Compile Include="Controllers\AgendarCitaController.cs" />
+    <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Controllers\recetasController.cs" />
     <Compile Include="Controllers\RolController.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -349,6 +353,16 @@
     <Content Include="Views\recetas\Details.cshtml" />
     <Content Include="Views\recetas\Edit.cshtml" />
     <Content Include="Views\recetas\Index.cshtml" />
+    <Content Include="Views\medicamentos\Create.cshtml" />
+    <Content Include="Views\medicamentos\Delete.cshtml" />
+    <Content Include="Views\medicamentos\Details.cshtml" />
+    <Content Include="Views\medicamentos\Edit.cshtml" />
+    <Content Include="Views\medicamentos\Index.cshtml" />
+    <Content Include="Views\especialidades\Create.cshtml" />
+    <Content Include="Views\especialidades\Delete.cshtml" />
+    <Content Include="Views\especialidades\Details.cshtml" />
+    <Content Include="Views\especialidades\Edit.cshtml" />
+    <Content Include="Views\especialidades\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

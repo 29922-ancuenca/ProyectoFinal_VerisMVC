@@ -42,7 +42,10 @@
         <h2 class="fw-bold text-dark mb-0">
             <i class="bi bi-person-badge-fill text-primary me-2"></i>M&eacute;dicos
         </h2>
-        <p class="mb-0">@Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
+        {
+            <p class="mb-0"><a href="@Url.Action("Create", "medico")" class="btn btn-primary rounded-pill px-4">Nuevo Médico</a></p>
+        }
     </div>
 
     <div class="med-card card">
@@ -86,9 +89,12 @@
             @Html.DisplayFor(modelItem => item.especialidades.Descripcion)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.IdMedico }) |
-            @Html.ActionLink("Details", "Details", new { id=item.IdMedico }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.IdMedico })
+            @Html.ActionLink("Details", "Details", new { id = item.IdMedico })
+            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
+            {
+                @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdMedico })
+                @: | @Html.ActionLink("Delete", "Delete", new { id = item.IdMedico })
+            }
         </td>
     </tr>
 }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using _02_MVC.Models;
+using _02_MVC.Helpers;
 
 namespace _02_MVC.Controllers
 {
@@ -18,7 +19,16 @@ namespace _02_MVC.Controllers
         // GET: paciente
         public ActionResult Index()
         {
-            var pacientes = db.pacientes.Include(p => p.AspNetUsers);
+            var usuario = SessionHelper.CurrentUser;
+            if (usuario == null) return RedirectToAction("Login", "Account");
+
+            IQueryable<pacientes> pacientes = db.pacientes.Include(p => p.AspNetUsers);
+
+            if (!User.IsInRole("SuperAdmin") && User.IsInRole("Paciente"))
+            {
+                pacientes = pacientes.Where(p => p.IdUsuario == usuario.Id);
+            }
+
             return View(pacientes.ToList());
         }
 
@@ -52,12 +62,22 @@ namespace _02_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.pacientes.Add(pacientes);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.pacientes.Add(pacientes);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+                {
+                    foreach (var eve in ex.EntityValidationErrors)
+                        foreach (var ve in eve.ValidationErrors)
+                            ModelState.AddModelError(ve.PropertyName, ve.ErrorMessage);
+                }
             }
 
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", pacientes.IdUsuario);
+            CargarFotosPaciente(pacientes.Foto);
             return View(pacientes);
         }
 

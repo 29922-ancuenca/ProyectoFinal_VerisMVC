@@ -1,0 +1,108 @@
+@model IEnumerable<_02_MVC.Models.medicamentos>
+
+@{
+    ViewBag.Title = "Medicamentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .med-card {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 6px 28px rgba(0,0,0,.07);
+        overflow: hidden;
+        margin: 2rem auto;
+        max-width: 750px;
+    }
+    .med-table thead {
+        background: #0b1d3e;
+        color: #fff;
+    }
+    .med-table thead th {
+        font-weight: 600;
+        font-size: .85rem;
+        letter-spacing: .04em;
+        padding: .9rem 1.2rem;
+        border: none;
+    }
+    .med-table tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background .15s;
+    }
+    .med-table tbody tr:hover {
+        background: #f0f4ff;
+    }
+    .med-table tbody td {
+        padding: .85rem 1.2rem;
+        vertical-align: middle;
+        font-size: .9rem;
+        color: #1e293b;
+    }
+    .badge-tipo {
+        background: #fef3c7;
+        color: #92400e;
+        border-radius: 50px;
+        padding: .25rem .75rem;
+        font-size: .8rem;
+        font-weight: 600;
+    }
+    .btn-nueva {
+        background: #0d6efd;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: .55rem 1.6rem;
+        font-weight: 700;
+        font-size: .9rem;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .btn-nueva:hover {
+        background: #0b5ed7;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(13,110,253,.3);
+    }
+    .action-link { font-size: .82rem; font-weight: 600; }
+</style>
+
+<div class="container my-4" style="max-width:760px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-800 mb-0" style="color:#0b1d3e;">
+            <i class="bi bi-capsule me-2" style="color:#0d6efd;"></i>Medicamentos
+        </h3>
+        <a href="@Url.Action("Create")" class="btn-nueva">
+            <i class="bi bi-plus-circle-fill me-1"></i>Nuevo Medicamento
+        </a>
+    </div>
+
+    <div class="med-card card">
+        <div class="card-body p-0">
+            <table class="table med-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Nombre</strong></td>
+                            <td><span class="badge-tipo">@item.Tipo</span></td>
+                            <td class="text-end">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.IdMedicamento }, new { @class = "action-link text-primary me-2" })
+                                @Html.ActionLink("Details", "Details", new { id = item.IdMedicamento }, new { @class = "action-link text-secondary me-2" })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.IdMedicamento }, new { @class = "action-link text-danger" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

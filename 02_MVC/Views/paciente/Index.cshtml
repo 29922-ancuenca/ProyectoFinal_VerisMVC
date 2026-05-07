@@ -42,7 +42,10 @@
         <h2 class="fw-bold text-dark mb-0">
             <i class="bi bi-people-fill text-primary me-2"></i>Pacientes
         </h2>
-        <p class="mb-0">@Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
+        {
+            <p class="mb-0">@Html.ActionLink("Nuevo Paciente", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
+        }
     </div>
 
     <div class="pac-card card">
@@ -110,9 +113,12 @@
             @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.IdPaciente }) |
-            @Html.ActionLink("Details", "Details", new { id=item.IdPaciente }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.IdPaciente })
+            @Html.ActionLink("Details", "Details", new { id = item.IdPaciente })
+            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
+            {
+                @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdPaciente })
+                @: | @Html.ActionLink("Delete", "Delete", new { id = item.IdPaciente })
+            }
         </td>
     </tr>
 }

@@ -1,0 +1,49 @@
+@model _02_MVC.Models.especialidades
+
+@{
+    ViewBag.Title = "Detalle Especialidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .det-card { border:none; border-radius:18px; box-shadow:0 6px 28px rgba(0,0,0,.08); overflow:hidden; max-width:580px; margin:0 auto; }
+    .det-card-header { background:#0b1d3e; color:#fff; padding:1.4rem 2rem; }
+    .det-card-header h4 { margin:0; font-weight:700; font-size:1.15rem; }
+    .det-card-body { padding:2rem; background:#fff; }
+    .det-label { font-size:.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.1rem; }
+    .det-value { font-size:1rem; color:#0f172a; font-weight:500; margin-bottom:1.2rem; }
+    .badge-dias { background:#e8f0fe; color:#1a56db; border-radius:50px; padding:.3rem .9rem; font-size:.85rem; font-weight:600; }
+    .badge-hora { background:#f0fdf4; color:#16a34a; border-radius:50px; padding:.3rem .9rem; font-size:.85rem; font-weight:600; }
+</style>
+
+<div class="container my-5">
+    <div class="det-card card">
+        <div class="det-card-header">
+            <h4><i class="bi bi-award-fill me-2"></i>Detalle de Especialidad</h4>
+        </div>
+        <div class="det-card-body">
+
+            <p class="det-label">Descripci&oacute;n</p>
+            <p class="det-value">@Model.Descripcion</p>
+
+            <p class="det-label">D&iacute;as</p>
+            <p class="det-value"><span class="badge-dias">@Model.Dias</span></p>
+
+            <div class="row">
+                <div class="col-6">
+                    <p class="det-label">Hora Inicio</p>
+                    <p class="det-value"><span class="badge-hora">@Model.Franja_HI.ToString(@"hh\:mm")</span></p>
+                </div>
+                <div class="col-6">
+                    <p class="det-label">Hora Fin</p>
+                    <p class="det-value"><span class="badge-hora">@Model.Franja_HF.ToString(@"hh\:mm")</span></p>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-2">
+                @Html.ActionLink("Editar", "Edit", new { id = Model.IdEspecialidad }, new { @class = "btn btn-primary rounded-pill px-4" })
+                @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,8 +41,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-dark mb-0">
             <i class="bi bi-calendar2-check-fill text-primary me-2"></i>Consultas
+            <small class="text-muted fs-6 ms-2">(@ViewBag.TotalEnBD en BD)</small>
         </h2>
-        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico") || User.IsInRole("Paciente"))
+        @if (User.IsInRole("SuperAdmin"))
         {
             <p class="mb-0">@Html.ActionLink("Nueva Consulta", "Create", null, new { @class = "btn btn-primary rounded-pill px-4" })</p>
         }
@@ -57,27 +58,39 @@
                         <th>Hora Inicio</th>
                         <th>Hora Fin</th>
                         <th>Diagn&oacute;stico</th>
-                        <th>Paciente</th>
-                        <th>M&eacute;dico</th>
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <th>Paciente</th>
+                            <th>M&eacute;dico</th>
+                        }
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="@(User.IsInRole("SuperAdmin") ? 7 : 5)" class="text-center text-muted py-4">No hay consultas registradas.</td>
+                        </tr>
+                    }
                     @foreach (var item in Model)
                     {
                         <tr>
                             <td>@item.FechaConsulta.ToString("dd/MM/yyyy")</td>
-                            <td>@Html.DisplayFor(modelItem => item.HI)</td>
-                            <td>@Html.DisplayFor(modelItem => item.HF)</td>
+                            <td>@item.HI.ToString(@"hh\:mm")</td>
+                            <td>@item.HF.ToString(@"hh\:mm")</td>
                             <td>@Html.DisplayFor(modelItem => item.Diagnostico)</td>
-                            <td>@Html.DisplayFor(modelItem => item.pacientes.Nombre)</td>
-                            <td>@Html.DisplayFor(modelItem => item.medicos.Nombre)</td>
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
+                                <td>@(item.pacientes != null ? item.pacientes.Nombre : "-")</td>
+                                <td>@(item.medicos != null ? item.medicos.Nombre : "-")</td>
+                            }
                             <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.IdConsulta }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.IdConsulta }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.IdConsulta })
                                 @if (User.IsInRole("SuperAdmin"))
                                 {
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.IdConsulta })
+                                    @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdConsulta })
+                                    @: | @Html.ActionLink("Delete", "Delete", new { id = item.IdConsulta })
                                 }
                             </td>
                         </tr>

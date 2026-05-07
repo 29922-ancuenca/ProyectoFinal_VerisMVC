@@ -1,0 +1,120 @@
+@model IEnumerable<_02_MVC.Models.especialidades>
+
+@{
+    ViewBag.Title = "Especialidades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .esp-card {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 6px 28px rgba(0,0,0,.07);
+        overflow: hidden;
+        margin: 2rem auto;
+        max-width: 950px;
+    }
+    .esp-table thead {
+        background: #0b1d3e;
+        color: #fff;
+    }
+    .esp-table thead th {
+        font-weight: 600;
+        font-size: .85rem;
+        letter-spacing: .04em;
+        padding: .9rem 1.2rem;
+        border: none;
+    }
+    .esp-table tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background .15s;
+    }
+    .esp-table tbody tr:hover {
+        background: #f0f4ff;
+    }
+    .esp-table tbody td {
+        padding: .85rem 1.2rem;
+        vertical-align: middle;
+        font-size: .9rem;
+        color: #1e293b;
+    }
+    .badge-dias {
+        background: #e8f0fe;
+        color: #1a56db;
+        border-radius: 50px;
+        padding: .25rem .75rem;
+        font-size: .8rem;
+        font-weight: 600;
+    }
+    .badge-hora {
+        background: #f0fdf4;
+        color: #16a34a;
+        border-radius: 50px;
+        padding: .25rem .75rem;
+        font-size: .8rem;
+        font-weight: 600;
+    }
+    .btn-nueva {
+        background: #0d6efd;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: .55rem 1.6rem;
+        font-weight: 700;
+        font-size: .9rem;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .btn-nueva:hover {
+        background: #0b5ed7;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(13,110,253,.3);
+    }
+    .action-link { font-size: .82rem; font-weight: 600; }
+</style>
+
+<div class="container my-4" style="max-width:960px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-800 mb-0" style="color:#0b1d3e;">
+            <i class="bi bi-award-fill me-2" style="color:#0d6efd;"></i>Especialidades
+        </h3>
+        <a href="@Url.Action("Create")" class="btn-nueva">
+            <i class="bi bi-plus-circle-fill me-1"></i>Nueva Especialidad
+        </a>
+    </div>
+
+    <div class="esp-card card">
+        <div class="card-body p-0">
+            <table class="table esp-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Descripci&oacute;n</th>
+                        <th>D&iacute;as</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Descripcion</strong></td>
+                            <td><span class="badge-dias">@item.Dias</span></td>
+                            <td><span class="badge-hora">@item.Franja_HI.ToString(@"hh\:mm")</span></td>
+                            <td><span class="badge-hora">@item.Franja_HF.ToString(@"hh\:mm")</span></td>
+                            <td class="text-end">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.IdEspecialidad }, new { @class = "action-link text-primary me-2" })
+                                @Html.ActionLink("Details", "Details", new { id = item.IdEspecialidad }, new { @class = "action-link text-secondary me-2" })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.IdEspecialidad }, new { @class = "action-link text-danger" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
