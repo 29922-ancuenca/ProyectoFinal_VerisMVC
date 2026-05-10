@@ -114,6 +114,7 @@
         </td>
         <td>
             @Html.ActionLink("Details", "Details", new { id = item.IdPaciente })
+            @Html.ActionLink("Edit", "Edit", new { id = item.IdPaciente })
             @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
             {
                 @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdPaciente })
