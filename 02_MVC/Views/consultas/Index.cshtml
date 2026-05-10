@@ -58,9 +58,12 @@
                         <th>Hora Inicio</th>
                         <th>Hora Fin</th>
                         <th>Diagn&oacute;stico</th>
-                        @if (User.IsInRole("SuperAdmin"))
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
                         {
                             <th>Paciente</th>
+                        }
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
                             <th>M&eacute;dico</th>
                         }
                         <th></th>
@@ -70,7 +73,7 @@
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="@(User.IsInRole("SuperAdmin") ? 7 : 5)" class="text-center text-muted py-4">No hay consultas registradas.</td>
+                            <td colspan="@(User.IsInRole("SuperAdmin") ? 7 : User.IsInRole("Medico") ? 6 : 5)" class="text-center text-muted py-4">No hay consultas registradas.</td>
                         </tr>
                     }
                     @foreach (var item in Model)
@@ -80,9 +83,12 @@
                             <td>@item.HI.ToString(@"hh\:mm")</td>
                             <td>@item.HF.ToString(@"hh\:mm")</td>
                             <td>@Html.DisplayFor(modelItem => item.Diagnostico)</td>
-                            @if (User.IsInRole("SuperAdmin"))
+                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
                             {
                                 <td>@(item.pacientes != null ? item.pacientes.Nombre : "-")</td>
+                            }
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
                                 <td>@(item.medicos != null ? item.medicos.Nombre : "-")</td>
                             }
                             <td>
@@ -91,6 +97,10 @@
                                 {
                                     @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdConsulta })
                                     @: | @Html.ActionLink("Delete", "Delete", new { id = item.IdConsulta })
+                                }
+                                @if (User.IsInRole("Medico"))
+                                {
+                                    @: | @Html.ActionLink("Atender", "Edit", new { id = item.IdConsulta }, new { @class = "btn btn-sm btn-success rounded-pill px-3" })
                                 }
                             </td>
                         </tr>

@@ -11,6 +11,8 @@ namespace _02_MVC.Controllers
     [Authorize(Roles = "Paciente")]
     public class AgendarCitaController : Controller
     {
+        private const int DURACION_CITA = 60; // minutos por cita
+
         private ProyectoVeris_MVC_BDEntities db = new ProyectoVeris_MVC_BDEntities();
 
         public ActionResult Index()
@@ -50,7 +52,7 @@ namespace _02_MVC.Controllers
 
             var inicio = medico.especialidades.Franja_HI;
             var fin    = medico.especialidades.Franja_HF;
-            int totalSlots = (int)((fin - inicio).TotalMinutes / 30);
+            int totalSlots = (int)((fin - inicio).TotalMinutes / DURACION_CITA);
 
             var primerDia = new DateTime(anio, mes, 1);
             var ultimoDia = new DateTime(anio, mes, DateTime.DaysInMonth(anio, mes));
@@ -108,7 +110,7 @@ namespace _02_MVC.Controllers
             {
                 if (!horasOcupadas.Contains(slotActual))
                     slots.Add(slotActual.ToString(@"hh\:mm"));
-                slotActual = slotActual.Add(TimeSpan.FromMinutes(30));
+                slotActual = slotActual.Add(TimeSpan.FromMinutes(DURACION_CITA));
             }
 
             return Json(slots, JsonRequestBehavior.AllowGet);
@@ -135,7 +137,7 @@ namespace _02_MVC.Controllers
                 return Json(new { success = false, message = "No puedes agendar una cita en una fecha pasada." });
 
             TimeSpan horaTs  = TimeSpan.Parse(hora);
-            TimeSpan horaFin = horaTs.Add(TimeSpan.FromMinutes(30));
+            TimeSpan horaFin = horaTs.Add(TimeSpan.FromMinutes(DURACION_CITA));
 
             // Validación 1: el paciente ya tiene cita a esa hora ese día
             bool conflictoPaciente = db.consultas.Any(c =>

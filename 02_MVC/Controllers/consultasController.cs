@@ -138,6 +138,39 @@ namespace _02_MVC.Controllers
             return View(consultas);
         }
 
+        // GET: consultas/Atender/5
+        [Authorize(Roles = "Medico, SuperAdmin")]
+        public ActionResult Atender(int? id)
+        {
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            consultas consulta = db.consultas
+                .Include(c => c.pacientes)
+                .Include(c => c.medicos)
+                .FirstOrDefault(c => c.IdConsulta == id);
+
+            if (consulta == null)
+                return HttpNotFound();
+
+            return View(consulta);
+        }
+
+        // POST: consultas/Atender/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Medico, SuperAdmin")]
+        public ActionResult Atender(int id, string Diagnostico)
+        {
+            var consulta = db.consultas.Find(id);
+            if (consulta == null)
+                return HttpNotFound();
+
+            consulta.Diagnostico = Diagnostico?.Trim();
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         // GET: consultas/Delete/5
         [Authorize(Roles = "SuperAdmin")]
         public ActionResult Delete(int? id)

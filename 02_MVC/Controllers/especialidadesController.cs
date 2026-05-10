@@ -10,6 +10,7 @@ using _02_MVC.Models;
 
 namespace _02_MVC.Controllers
 {
+    [Authorize(Roles = "SuperAdmin, Administrador")]
     public class especialidadesController : Controller
     {
         private ProyectoVeris_MVC_BDEntities db = new ProyectoVeris_MVC_BDEntities();

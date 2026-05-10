@@ -35,23 +35,63 @@
                     @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger small" })
                 </div>
 
+                @{ var diasActuales = Model.Dias ?? ""; }
+
+                <!-- Días de Atención -->
                 <div class="mb-3">
-                    <label class="form-label-custom">D&iacute;as</label>
-                    @Html.EditorFor(model => model.Dias, new { htmlAttributes = new { @class = "form-control form-control-custom" } })
-                    @Html.ValidationMessageFor(model => model.Dias, "", new { @class = "text-danger small" })
+                    <label class="form-label-custom">D&iacute;as de Atenci&oacute;n</label>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="row g-2">
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dias_L" name="Dias" value="L" @(diasActuales.Contains("L") ? "checked" : "")>
+                                        <label class="form-check-label" for="dias_L">Lunes</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dias_M" name="Dias" value="M" @(diasActuales.Contains("M") ? "checked" : "")>
+                                        <label class="form-check-label" for="dias_M">Martes</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dias_X" name="Dias" value="X" @(diasActuales.Contains("X") ? "checked" : "")>
+                                        <label class="form-check-label" for="dias_X">Mi&eacute;rcoles</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dias_J" name="Dias" value="J" @(diasActuales.Contains("J") ? "checked" : "")>
+                                        <label class="form-check-label" for="dias_J">Jueves</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dias_V" name="Dias" value="V" @(diasActuales.Contains("V") ? "checked" : "")>
+                                        <label class="form-check-label" for="dias_V">Viernes</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="btnDiasLV">Lunes a Viernes</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="btnDiasClear">Limpiar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Hora Inicio</label>
-                        @Html.EditorFor(model => model.Franja_HI, new { htmlAttributes = new { @class = "form-control form-control-custom" } })
-                        @Html.ValidationMessageFor(model => model.Franja_HI, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Hora Fin</label>
-                        @Html.EditorFor(model => model.Franja_HF, new { htmlAttributes = new { @class = "form-control form-control-custom" } })
-                        @Html.ValidationMessageFor(model => model.Franja_HF, "", new { @class = "text-danger small" })
-                    </div>
+                <!-- Franja horaria -->
+                <div class="mb-3">
+                    <label class="form-label-custom" for="Franja_HI">Hora Inicio</label>
+                    <input class="form-control form-control-custom" id="Franja_HI" name="Franja_HI" type="time"
+                           value="@Model.Franja_HI.ToString(@"hh\:mm")" />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label-custom" for="Franja_HF">Hora Fin</label>
+                    <input class="form-control form-control-custom" id="Franja_HF" name="Franja_HF" type="time"
+                           value="@Model.Franja_HF.ToString(@"hh\:mm")" />
                 </div>
 
                 <div class="d-flex gap-2">
@@ -65,4 +105,19 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var btnLV = document.getElementById('btnDiasLV');
+            var btnClr = document.getElementById('btnDiasClear');
+            function setDias(codes) {
+                var set = {};
+                (codes || []).forEach(function (c) { set[c] = true; });
+                document.querySelectorAll('input[name="Dias"]').forEach(function (el) {
+                    el.checked = !!set[el.value];
+                });
+            }
+            if (btnLV) btnLV.addEventListener('click', function () { setDias(['L', 'M', 'X', 'J', 'V']); });
+            if (btnClr) btnClr.addEventListener('click', function () { setDias([]); });
+        });
+    </script>
 }
