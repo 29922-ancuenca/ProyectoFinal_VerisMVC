@@ -260,8 +260,6 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="favicon.ico" />
-    <Content Include="Foto - Copia\PamelaCarriel.jpeg" />
-    <Content Include="Foto - Copia\yo.png" />
     <Content Include="Foto\PamelaCarriel.jpeg" />
     <Content Include="Foto\yo.png" />
     <Content Include="Global.asax" />
