@@ -48,9 +48,12 @@
                 <thead>
                     <tr>
                         <th>Fecha Consulta</th>
-                        @if (User.IsInRole("SuperAdmin"))
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
                         {
                             <th>Paciente</th>
+                        }
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
                             <th>M&eacute;dico</th>
                         }
                         <th>Diagn&oacute;stico</th>
@@ -63,16 +66,19 @@
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="@(User.IsInRole("SuperAdmin") ? 7 : 5)" class="text-center text-muted py-4">No hay recetas registradas.</td>
+                            <td colspan="@(User.IsInRole("SuperAdmin") ? 7 : User.IsInRole("Medico") ? 6 : 5)" class="text-center text-muted py-4">No hay recetas registradas.</td>
                         </tr>
                     }
                     @foreach (var item in Model)
                     {
                         <tr>
                             <td>@item.consultas.FechaConsulta.ToString("dd/MM/yyyy")</td>
-                            @if (User.IsInRole("SuperAdmin"))
+                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Medico"))
                             {
                                 <td>@(item.consultas.pacientes != null ? item.consultas.pacientes.Nombre : "-")</td>
+                            }
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
                                 <td>@(item.consultas.medicos != null ? item.consultas.medicos.Nombre : "-")</td>
                             }
                             <td>@Html.DisplayFor(modelItem => item.consultas.Diagnostico)</td>
