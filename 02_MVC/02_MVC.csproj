@@ -174,6 +174,7 @@
     <Compile Include="Controllers\especialidadesController.cs" />
     <Compile Include="Controllers\medicamentosController.cs" />
     <Compile Include="Controllers\AgendarCitaController.cs" />
+    <Compile Include="Filters\Filtro_VERIFICA_SESSION.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Controllers\recetasController.cs" />
     <Compile Include="Controllers\RolController.cs" />
@@ -259,6 +260,8 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="favicon.ico" />
+    <Content Include="Foto - Copia\PamelaCarriel.jpeg" />
+    <Content Include="Foto - Copia\yo.png" />
     <Content Include="Foto\PamelaCarriel.jpeg" />
     <Content Include="Foto\yo.png" />
     <Content Include="Global.asax" />
@@ -363,6 +366,7 @@
     <Content Include="Views\especialidades\Details.cshtml" />
     <Content Include="Views\especialidades\Edit.cshtml" />
     <Content Include="Views\especialidades\Index.cshtml" />
+    <Content Include="Views\AgendarCita\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

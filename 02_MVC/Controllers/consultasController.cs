@@ -79,9 +79,7 @@ namespace _02_MVC.Controllers
         // GET: consultas/Create
         public ActionResult Create()
         {
-            ViewBag.IdPaciente = new SelectList(db.pacientes, "IdPaciente", "Nombre");
-            ViewBag.IdMedico = new SelectList(db.medicos, "IdMedico", "Nombre");
-            return View();
+            return RedirectToAction("Index", "AgendarCita");
         }
 
         // POST: consultas/Create

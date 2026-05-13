@@ -17,7 +17,7 @@
     .cal-header { display:flex; align-items:center; justify-content:space-between; background:#0d6efd; color:#fff; border-radius:12px 12px 0 0; padding:.7rem 1.2rem; }
     .cal-header .mes-nombre { font-weight:700; font-size:1rem; }
     .cal-nav { background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:0 .5rem; }
-    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+    .cal-grid { display:grid; grid-template-columns:repeat(5,1fr); }
     .cal-dow { text-align:center; font-size:.75rem; font-weight:700; color:#64748b; padding:.5rem 0; background:#f8fafc; }
     .cal-day { text-align:center; padding:.5rem .2rem; font-size:.82rem; cursor:default; position:relative; border:1px solid #f1f5f9; min-height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
     .cal-day.disponible { background:#f0fdf4; cursor:pointer; }
@@ -59,6 +59,18 @@
             <div class="panel-card">
 
                 <p class="step-label"><span class="step-num">1</span> Especialidad y M&eacute;dico</p>
+
+                @if (ViewBag.EsAdmin == true)
+                {
+                    <label style="font-size:.8rem;color:#64748b;">Paciente</label>
+                    <select id="ddlPaciente" class="form-ctrl">
+                        <option value="">-- Seleccione un paciente --</option>
+                        @foreach (SelectListItem p in ViewBag.Pacientes)
+                        {
+                            <option value="@p.Value">@p.Text</option>
+                        }
+                    </select>
+                }
 
                 <label style="font-size:.8rem;color:#64748b;">Especialidad</label>
                 <select id="ddlEspecialidad" class="form-ctrl">
@@ -125,31 +137,57 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
     <script>
-        var calAnio  = new Date().getFullYear();
-        var calMes   = new Date().getMonth() + 1; // 1-based
-        var diasDisponibles = [];
-        var slotsLibres     = {};
-        var selectedFecha   = null;
-        var selectedHora    = null;
+        var ANIO_MIN = 2000;
+        var ANIO_MAX = 2030;
+
+        // Semana ISO 8601 (calendario gregoriano)
+        // La semana 1 contiene el primer jueves del año
+        function isoSemana(fecha) {
+            var d = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()));
+            var dow = d.getUTCDay() || 7; // domingo = 7
+            d.setUTCDate(d.getUTCDate() + 4 - dow);
+            var anioISO = d.getUTCFullYear();
+            var inicioAnio = new Date(Date.UTC(anioISO, 0, 1));
+            var semana = Math.ceil(((d - inicioAnio) / 86400000 + 1) / 7);
+            return { semana: semana, anio: anioISO };
+        }
+
+        // Cuántas semanas ISO tiene un año (52 o 53)
+        function semanasEnAnio(y) {
+            function p(n) { return n + Math.floor(n / 4) - Math.floor(n / 100) + Math.floor(n / 400); }
+            return (p(y) % 7 === 4 || p(y - 1) % 7 === 3) ? 53 : 52;
+        }
+
+        var hoy    = new Date();
+        var sw     = isoSemana(hoy);
+        var calAnio   = sw.anio;
+        var calSemana = sw.semana;
+
+        var diasDisponibles  = [];
+        var slotsLibres      = {};
+        var selectedFecha    = null;
+        var selectedHora     = null;
         var selectedIdMedico = null;
+        var lunesSemana      = null;
 
-        var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        var dows  = ['Lu','Ma','Mi','Ju','Vi','Sa','Do'];
+        var dows     = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
+        var diasNomb = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        var mesesC   = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        var mesesN   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-        // â”€â”€â”€ Especialidad cambia â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Especialidad cambia ---
         $('#ddlEspecialidad').on('change', function () {
             var idEsp = $(this).val();
             resetAll();
             if (!idEsp) { $('#ddlMedico').prop('disabled', true).html('<option value="">-- Primero seleccione especialidad --</option>'); return; }
-
             $.getJSON('@Url.Action("GetMedicos","AgendarCita")', { idEspecialidad: idEsp }, function (data) {
-                var ddl = $('#ddlMedico').empty().append('<option value="">-- Seleccione un m&eacute;dico --</option>');
+                var ddl = $('#ddlMedico').empty().append('<option value="">-- Seleccione un médico --</option>');
                 $.each(data, function (i, m) { ddl.append($('<option>', { value: m.id, text: m.nombre })); });
                 ddl.prop('disabled', false);
             });
         });
 
-        // â”€â”€â”€ m&eacute;dico cambia â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Médico cambia ---
         $('#ddlMedico').on('change', function () {
             selectedIdMedico = $(this).val();
             resetFechaHora();
@@ -159,54 +197,68 @@
             cargarCalendario();
         });
 
-        // â”€â”€â”€ NavegaciÃ³n mes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Navegación semana (ISO 8601 gregoriano) ---
         $('#btnPrev').on('click', function () {
-            calMes--;
-            if (calMes < 1) { calMes = 12; calAnio--; }
+            calSemana--;
+            if (calSemana < 1) {
+                calAnio--;
+                calSemana = semanasEnAnio(calAnio);
+            }
+            if (calAnio < ANIO_MIN) { calAnio = ANIO_MIN; calSemana = 1; }
             resetFechaHora();
             cargarCalendario();
         });
 
         $('#btnNext').on('click', function () {
-            calMes++;
-            if (calMes > 12) { calMes = 1; calAnio++; }
+            calSemana++;
+            if (calSemana > semanasEnAnio(calAnio)) { calSemana = 1; calAnio++; }
+            if (calAnio > ANIO_MAX) { calAnio = ANIO_MAX; calSemana = semanasEnAnio(calAnio); }
             resetFechaHora();
             cargarCalendario();
         });
 
-        // â”€â”€â”€ Cargar calendario â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Cargar calendario ---
         function cargarCalendario() {
+            actualizarBotonesNav();
             $.getJSON('@Url.Action("GetCalendario","AgendarCita")', {
-                idMedico: selectedIdMedico, anio: calAnio, mes: calMes
+                idMedico: selectedIdMedico, anio: calAnio, semana: calSemana
             }, function (data) {
                 diasDisponibles = data.diasDisponibles || [];
                 slotsLibres     = data.slotsLibres     || {};
-                renderCalendario();
+                lunesSemana     = data.lunesSemana;
+                renderCalendario(data.lunesSemana, data.viernesSemana);
             });
         }
 
-        function renderCalendario() {
-            $('#calTitulo').text(meses[calMes - 1] + ' ' + calAnio);
+        function actualizarBotonesNav() {
+            $('#btnPrev').prop('disabled', calAnio === ANIO_MIN && calSemana === 1);
+            $('#btnNext').prop('disabled', calAnio === ANIO_MAX && calSemana === semanasEnAnio(ANIO_MAX));
+        }
 
+        function renderCalendario(lunesStr, viernesStr) {
+            var lunes   = parseFecha(lunesStr);
+            var viernes = parseFecha(viernesStr);
+
+            // Título: "Semana 20 — 12 may al 16 may 2025"
+            var titulo = 'Semana ' + calSemana + ' &mdash; '
+                + lunes.getDate() + ' ' + mesesC[lunes.getMonth()]
+                + ' al '
+                + viernes.getDate() + ' ' + mesesC[viernes.getMonth()]
+                + ' ' + calAnio;
+            $('#calTitulo').html(titulo);
+
+            // Cabecera días
             var dowHtml = '';
             dows.forEach(function (d) { dowHtml += '<div class="cal-dow">' + d + '</div>'; });
             $('#calDow').html(dowHtml);
 
-            var primerDia = new Date(calAnio, calMes - 1, 1);
-            var ultimoDia = new Date(calAnio, calMes, 0).getDate();
-            var startDow  = (primerDia.getDay() + 6) % 7;
-
-            // Hoy sin hora para comparar solo fechas
-            var hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-
+            var hoyD = new Date(); hoyD.setHours(0, 0, 0, 0);
             var html = '';
-            for (var i = 0; i < startDow; i++) html += '<div class="cal-day otro-mes"></div>';
 
-            for (var d = 1; d <= ultimoDia; d++) {
-                var fechaStr  = calAnio + '-' + pad(calMes) + '-' + pad(d);
-                var fechaDate = new Date(calAnio, calMes - 1, d);
-                var esPasado  = fechaDate < hoy;
+            for (var i = 0; i <= 4; i++) {
+                var fecha     = new Date(lunes.getFullYear(), lunes.getMonth(), lunes.getDate() + i);
+                var fechaStr  = fecha.getFullYear() + '-' + pad(fecha.getMonth() + 1) + '-' + pad(fecha.getDate());
+                var esPasado  = fecha < hoyD;
                 var esDisp    = diasDisponibles.indexOf(fechaStr) >= 0;
                 var esSel     = fechaStr === selectedFecha;
                 var slots     = slotsLibres[fechaStr] || 0;
@@ -214,39 +266,36 @@
                 var cls       = esSel ? 'seleccionado' : (clickable ? 'disponible' : 'no-disponible');
 
                 html += '<div class="cal-day ' + cls + '" ' + (clickable ? 'data-fecha="' + fechaStr + '"' : '') + '>';
-                html += '<span>' + d + '</span>';
+                html += '<span style="font-size:.7rem;color:#94a3b8;">' + diasNomb[(fecha.getDay())] + '</span>';
+                html += '<span>' + fecha.getDate() + ' ' + mesesC[fecha.getMonth()] + '</span>';
                 if (clickable) html += '<span class="slot-count">' + slots + '<span class="dot"></span></span>';
                 html += '</div>';
             }
             $('#calBody').html(html);
 
-            // Click en dÃ­a disponible
             $('#calBody').off('click', '.disponible').on('click', '.disponible', function () {
                 selectedFecha = $(this).data('fecha');
                 selectedHora  = null;
                 $('#btnConfirmar').prop('disabled', true);
-                renderCalendario();
+                renderCalendario(lunesStr, viernesStr);
                 cargarHoras();
             });
         }
 
-        // â”€â”€â”€ Horas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Horas ---
         function cargarHoras() {
             $('#horasContainer').show();
             $('#labelHoras').show();
             var partes = selectedFecha.split('-');
-            var d = new Date(parseInt(partes[0]), parseInt(partes[1])-1, parseInt(partes[2]));
-            var dias = ['Domingo','Lunes','Martes','MiÃ©rcoles','Jueves','Viernes','SÃ¡bado'];
-            var mesesC = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-            $('#fechaSelLabel').text(dias[d.getDay()] + ' ' + d.getDate() + ' de ' + mesesC[d.getMonth()]);
-
+            var d = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+            $('#fechaSelLabel').text(diasNomb[d.getDay()] + ' ' + d.getDate() + ' de ' + mesesC[d.getMonth()]);
             $('#horasGrid').html('<span style="color:#94a3b8;font-size:.85rem;">Cargando...</span>');
 
             $.getJSON('@Url.Action("GetHoras","AgendarCita")', {
                 idMedico: selectedIdMedico, fecha: selectedFecha
             }, function (horas) {
                 if (horas.length === 0) {
-                    $('#horasGrid').html('<span style="color:#ef4444;font-size:.85rem;">No hay horas disponibles para este dÃ­a.</span>');
+                    $('#horasGrid').html('<span style="color:#ef4444;font-size:.85rem;">No hay horas disponibles para este día.</span>');
                     return;
                 }
                 var html = '';
@@ -255,7 +304,6 @@
                     html += '<button type="button" class="hora-btn ' + sel + '" data-hora="' + h + '"><i class="bi bi-clock me-1"></i>' + h + '</button>';
                 });
                 $('#horasGrid').html(html);
-
                 $('#horasGrid').off('click', '.hora-btn').on('click', '.hora-btn', function () {
                     selectedHora = $(this).data('hora');
                     $('.hora-btn').removeClass('seleccionada');
@@ -266,19 +314,25 @@
             });
         }
 
-        // â”€â”€â”€ Confirmar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Confirmar ---
         $('#btnConfirmar').on('click', function () {
             if (!selectedFecha || !selectedHora || !selectedIdMedico) return;
-            $(this).prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i>Agendando...');
 
+            var idPaciente = $('#ddlPaciente').length ? $('#ddlPaciente').val() : null;
+            if ($('#ddlPaciente').length && !idPaciente) {
+                showAlert('Debe seleccionar un paciente.', 'error');
+                return;
+            }
+
+            $(this).prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i>Agendando...');
             $.post('@Url.Action("Confirmar","AgendarCita")', {
-                idMedico: selectedIdMedico,
-                fecha:    selectedFecha,
-                hora:     selectedHora
+                idMedico:   selectedIdMedico,
+                fecha:      selectedFecha,
+                hora:       selectedHora,
+                idPaciente: idPaciente
             }, function (resp) {
                 if (resp.success) {
                     showAlert(resp.message, 'success');
-                    // Refrescar calendario y horas
                     cargarCalendario();
                     cargarHoras();
                     selectedHora = null;
@@ -290,7 +344,12 @@
             });
         });
 
-        // â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // --- Helpers ---
+        function parseFecha(str) {
+            var p = str.split('-');
+            return new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+        }
+
         function resetAll() {
             resetFechaHora();
             selectedIdMedico = null;

@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Proyecto VERIS";
+    ViewBag.Title = "Clinica Pediatrica Veris";
 }
 
 <style>
@@ -56,42 +56,15 @@
             width: 8%;
         }
 
-    .bg-c-cardio {
-        background: linear-gradient(135deg, #7f0000, #b91c1c);
-    }
-
-    .bg-c-pediatria {
-        background: linear-gradient(135deg, #0c2461, #1d4ed8);
-    }
-
-    .bg-c-derma {
-        background: linear-gradient(135deg, #92400e, #d97706);
-    }
-
-    .bg-c-gineco {
-        background: linear-gradient(135deg, #4c1d95, #7c3aed);
-    }
-
-    .bg-c-oftalmo {
-        background: linear-gradient(135deg, #064e3b, #059669);
-    }
-
-    .bg-c-neumo {
-        background: linear-gradient(135deg, #0c3a60, #0284c7);
-    }
-
-    .bg-c-trauma {
-        background: linear-gradient(135deg, #14532d, #15803d);
-    }
-
-    .bg-c-neuro {
-        background: linear-gradient(135deg, #2e1065, #7c3aed);
-    }
-
-    .carousel-img {
-        height: 420px;
-        object-fit: cover;
-    }
+    /* Gradientes pediátricos */
+    .bg-c-pedi-general { background: linear-gradient(135deg, #0c4a6e, #0284c7); }
+    .bg-c-neonato      { background: linear-gradient(135deg, #831843, #db2777); }
+    .bg-c-cardio-pedi  { background: linear-gradient(135deg, #7f0000, #b91c1c); }
+    .bg-c-neumo-pedi   { background: linear-gradient(135deg, #0c3a60, #0ea5e9); }
+    .bg-c-neuro-pedi   { background: linear-gradient(135deg, #2e1065, #7c3aed); }
+    .bg-c-vacunas      { background: linear-gradient(135deg, #064e3b, #059669); }
+    .bg-c-nutri        { background: linear-gradient(135deg, #92400e, #d97706); }
+    .bg-c-urgencias    { background: linear-gradient(135deg, #7f1d1d, #ef4444); }
 
     .info-card {
         background: #fff;
@@ -260,8 +233,8 @@
 
 <main class="container text-center mt-5">
 
-    <h1 class="text-primary">Bienvenido a Proyecto Veris</h1>
-    <p class="text-muted">Sistema de gesti&oacute;n m&eacute;dica integral.</p>
+    <h1 class="text-primary">Bienvenido a Cl&iacute;nica Pedi&aacute;trica Veris</h1>
+    <p class="text-muted">Atenci&oacute;n m&eacute;dica integral para ni&ntilde;os y adolescentes.</p>
 
     <!-- CARRUSEL -->
     <section class="container mt-5">
@@ -280,93 +253,107 @@
 
             <div class="carousel-inner">
 
-                <!-- CARDIOLOGÍA -->
+                <!-- PEDIATRÍA GENERAL -->
                 <div class="carousel-item active">
-                    <div class="carousel-bg bg-c-cardio position-relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?w=1280&q=80"
+                    <div class="carousel-bg bg-c-pedi-general position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1676313027775-a5a3dca6f98b?w=1280&q=80"
                              class="w-100"
                              style="height:420px; object-fit:cover;">
                         <div class="carousel-caption">
-                            <h3>Cardiolog&iacute;a</h3>
-                            <p>Tratamiento de enfermedades del coraz&oacute;n</p>
+                            <h3>Pediatr&iacute;a General</h3>
+                            <p>Atenci&oacute;n m&eacute;dica integral del ni&ntilde;o y adolescente</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- PEDIATRÍA -->
+                <!-- NEONATOLOGÍA -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Pediatr&iacute;a</h3>
-                        <p>Atenci&oacute;n m&eacute;dica para ni&ntilde;os</p>
+                    <div class="carousel-bg bg-c-neonato position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1604807787527-e7ad386cca6a?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Neonatolog&iacute;a</h3>
+                            <p>Cuidado especializado del reci&eacute;n nacido</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- DERMATOLOGÍA -->
+                <!-- CARDIOLOGÍA PEDIÁTRICA -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Dermatolog&iacute;a</h3>
-                        <p>Cuidado de la piel</p>
+                    <div class="carousel-bg bg-c-cardio-pedi position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1632053002928-1919605ee6f7?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Cardiolog&iacute;a Pedi&aacute;trica</h3>
+                            <p>Salud cardiovascular desde la infancia</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- GINECOLOGÍA -->
+                <!-- NEUMOLOGÍA PEDIÁTRICA -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Ginecolog&iacute;a</h3>
-                        <p>Salud de la mujer</p>
+                    <div class="carousel-bg bg-c-neumo-pedi position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1632052998047-1faea5c31145?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Neumolog&iacute;a Pedi&aacute;trica</h3>
+                            <p>Tratamiento de enfermedades respiratorias en ni&ntilde;os</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- OFTALMOLOGÍA -->
+                <!-- NEUROLOGÍA PEDIÁTRICA -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Oftalmolog&iacute;a</h3>
-                        <p>Salud visual</p>
+                    <div class="carousel-bg bg-c-neuro-pedi position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1758691463331-2ac00e6f676f?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Neurolog&iacute;a Pedi&aacute;trica</h3>
+                            <p>Desarrollo neurol&oacute;gico y salud del sistema nervioso</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- NEUMOLOGÍA -->
+                <!-- VACUNACIÓN -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1559825481-12a05cc00344?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Neumolog&iacute;a</h3>
-                        <p>Enfermedades respiratorias</p>
+                    <div class="carousel-bg bg-c-vacunas position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1576766125535-b04e15fd0273?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Vacunaci&oacute;n e Inmunolog&iacute;a</h3>
+                            <p>Esquema completo de vacunas y prevenci&oacute;n de enfermedades</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- TRAUMATOLOGÍA -->
+                <!-- NUTRICIÓN PEDIÁTRICA -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Traumatolog&iacute;a</h3>
-                        <p>Lesiones y huesos</p>
+                    <div class="carousel-bg bg-c-nutri position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1774188271212-8bad27d24d08?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Nutrici&oacute;n Pedi&aacute;trica</h3>
+                            <p>Alimentaci&oacute;n saludable para el crecimiento &oacute;ptimo</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- NEUROLOGÍA -->
+                <!-- URGENCIAS PEDIÁTRICAS -->
                 <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1280&q=80"
-                         class="d-block w-100"
-                         style="height:420px; object-fit:cover;">
-                    <div class="carousel-caption">
-                        <h3>Neurolog&iacute;a</h3>
-                        <p>Sistema nervioso</p>
+                    <div class="carousel-bg bg-c-urgencias position-relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1768583235368-ec6bf1ab1974?w=1280&q=80"
+                             class="w-100"
+                             style="height:420px; object-fit:cover;">
+                        <div class="carousel-caption">
+                            <h3>Urgencias Pedi&aacute;tricas</h3>
+                            <p>Atenci&oacute;n inmediata las 24 horas para tu hijo</p>
+                        </div>
                     </div>
                 </div>
 
@@ -382,6 +369,7 @@
 
         </div>
     </section>
+
     <!-- MÓDULOS -->
     <section class="mt-5">
         <div class="row g-4">
@@ -394,7 +382,7 @@
                         </div>
                         <div class="info-title">M&oacute;dulo Paciente</div>
                         <div class="info-text">
-                            Gestionar informaci&oacute;n de pacientes registrados en el sistema.
+                            Gestiona el historial cl&iacute;nico y la informaci&oacute;n de los peque&ntilde;os pacientes.
                         </div>
                     </div>
                 </a>
@@ -408,7 +396,7 @@
                         </div>
                         <div class="info-title">M&oacute;dulo M&eacute;dico</div>
                         <div class="info-text">
-                            Gestionar informaci&oacute;n de m&eacute;dicos, horarios y especialidades.
+                            Administra el equipo de pediatras, horarios y especialidades infantiles.
                         </div>
                     </div>
                 </a>
@@ -422,7 +410,7 @@
                         </div>
                         <div class="info-title">M&oacute;dulo Administrador</div>
                         <div class="info-text">
-                            Acceso a opciones administrativas y configuraci&oacute;n del sistema.
+                            Acceso a opciones administrativas y configuraci&oacute;n de la cl&iacute;nica.
                         </div>
                     </div>
                 </a>
@@ -436,17 +424,17 @@
         <div class="container">
             <div class="hero-card">
                 <div class="hero-pill">
-                    <i class="bi bi-heart-fill"></i> Pediatr&iacute;a
+                    <i class="bi bi-emoji-smile-fill"></i> Cuidamos a tus hijos
                 </div>
 
                 <div class="hero-title">
-                    Cuidemos la salud de tus hijos
+                    Salud infantil con amor y experiencia
                 </div>
 
                 <div class="hero-sub">
-                    Atenci&oacute;n m&eacute;dica integral enfocada en prevenci&oacute;n,
-                    crecimiento y bienestar infantil, en un entorno c&aacute;lido
-                    y confiable para toda la familia.
+                    En Cl&iacute;nica Pedi&aacute;trica Veris brindamos atenci&oacute;n m&eacute;dica especializada
+                    desde el nacimiento hasta la adolescencia, en un ambiente c&aacute;lido, seguro
+                    y dise&ntilde;ado especialmente para los m&aacute;s peque&ntilde;os de la familia.
                 </div>
             </div>
 
@@ -459,19 +447,7 @@
                         </div>
                         <div class="info-title">Control del ni&ntilde;o sano</div>
                         <div class="info-text">
-                            Seguimiento del crecimiento y desarrollo infantil por etapas.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="bi bi-camera-video"></i>
-                        </div>
-                        <div class="info-title">Telepediatr&iacute;a</div>
-                        <div class="info-text">
-                            Orientaci&oacute;n m&eacute;dica desde tu hogar de forma segura.
+                            Seguimiento peri&oacute;dico del crecimiento y desarrollo infantil por etapas.
                         </div>
                     </div>
                 </div>
@@ -483,12 +459,96 @@
                         </div>
                         <div class="info-title">Vacunas y prevenci&oacute;n</div>
                         <div class="info-text">
-                            Protecci&oacute;n y educaci&oacute;n para una infancia saludable.
+                            Esquema completo de inmunizaci&oacute;n para una infancia protegida y saludable.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-camera-video"></i>
+                        </div>
+                        <div class="info-title">Telepediatr&iacute;a</div>
+                        <div class="info-text">
+                            Consultas virtuales con pediatras certificados desde la comodidad de tu hogar.
                         </div>
                     </div>
                 </div>
 
             </div>
+        </div>
+    </section>
+
+    <!-- SERVICIOS PEDIÁTRICOS -->
+    <section class="mt-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Nuestros Servicios Pedi&aacute;tricos</h2>
+            <p class="text-muted">Atenci&oacute;n especializada para cada etapa del desarrollo infantil</p>
+            <div style="width:60px; height:4px; background:#0d6efd; margin:0 auto; border-radius:10px;"></div>
+        </div>
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-heart-fill"></i></div>
+                    <div class="info-title">Neonatolog&iacute;a</div>
+                    <div class="info-text">
+                        Cuidado intensivo y especializado para reci&eacute;n nacidos prematuros o de alto riesgo.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-activity"></i></div>
+                    <div class="info-title">Urgencias 24/7</div>
+                    <div class="info-text">
+                        Atenci&oacute;n de emergencias pedi&aacute;tricas las 24 horas del d&iacute;a, los 7 d&iacute;as de la semana.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-basket-fill"></i></div>
+                    <div class="info-title">Nutrici&oacute;n Infantil</div>
+                    <div class="info-text">
+                        Planes nutricionales personalizados para el crecimiento y desarrollo &oacute;ptimo del ni&ntilde;o.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-lightning-fill"></i></div>
+                    <div class="info-title">Neurolog&iacute;a Pedi&aacute;trica</div>
+                    <div class="info-text">
+                        Diagn&oacute;stico y tratamiento de trastornos del sistema nervioso en la infancia.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-wind"></i></div>
+                    <div class="info-title">Neumolog&iacute;a Pedi&aacute;trica</div>
+                    <div class="info-text">
+                        Tratamiento del asma, bronquitis y otras enfermedades respiratorias infantiles.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-icon"><i class="bi bi-emoji-laughing-fill"></i></div>
+                    <div class="info-title">Odontopediatr&iacute;a</div>
+                    <div class="info-text">
+                        Cuidado dental preventivo y tratamiento bucodental para ni&ntilde;os y adolescentes.
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -501,24 +561,24 @@
                     <div class="stat-icon">
                         <i class="bi bi-hospital"></i>
                     </div>
-                    <div class="stat-num">+18</div>
-                    <div class="stat-title">A&ntilde;os de experiencia</div>
+                    <div class="stat-num">+15</div>
+                    <div class="stat-title">A&ntilde;os de experiencia pedi&aacute;trica</div>
                 </div>
 
                 <div class="col-md-4">
                     <div class="stat-icon">
                         <i class="bi bi-people"></i>
                     </div>
-                    <div class="stat-num">+1&rsquo;000.000</div>
-                    <div class="stat-title">Pacientes atendidos</div>
+                    <div class="stat-num">+50.000</div>
+                    <div class="stat-title">Ni&ntilde;os atendidos</div>
                 </div>
 
                 <div class="col-md-4">
                     <div class="stat-icon">
                         <i class="bi bi-person-vcard"></i>
                     </div>
-                    <div class="stat-num">+10</div>
-                    <div class="stat-title">Especialidades</div>
+                    <div class="stat-num">+8</div>
+                    <div class="stat-title">Especialidades pedi&aacute;tricas</div>
                 </div>
 
             </div>

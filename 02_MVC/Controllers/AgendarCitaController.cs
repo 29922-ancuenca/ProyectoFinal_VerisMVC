@@ -8,9 +8,11 @@ using _02_MVC.Helpers;
 
 namespace _02_MVC.Controllers
 {
-    [Authorize(Roles = "Paciente")]
+    [Authorize(Roles = "SuperAdmin, Administrador, Paciente")]
     public class AgendarCitaController : Controller
     {
+        private const int DURACION_CITA = 60; // minutos por cita
+
         private ProyectoVeris_MVC_BDEntities db = new ProyectoVeris_MVC_BDEntities();
 
         public ActionResult Index()
@@ -19,6 +21,23 @@ namespace _02_MVC.Controllers
             if (usuario == null) return RedirectToAction("Login", "Account");
 
             ViewBag.Especialidades = new SelectList(db.especialidades.ToList(), "IdEspecialidad", "Descripcion");
+
+            var appDb = new ApplicationDbContext();
+            var rolesUsuario = appDb.Users
+                .Where(u => u.Id == usuario.Id)
+                .SelectMany(u => u.Roles)
+                .Select(r => r.RoleId)
+                .ToList();
+            var nombresRoles = appDb.Roles
+                .Where(r => rolesUsuario.Contains(r.Id))
+                .Select(r => r.Name)
+                .ToList();
+            bool esAdmin = nombresRoles.Contains("SuperAdmin") || nombresRoles.Contains("Administrador");
+            ViewBag.EsAdmin = esAdmin;
+
+            if (esAdmin)
+                ViewBag.Pacientes = new SelectList(db.pacientes.ToList(), "IdPaciente", "Nombre");
+
             return View();
         }
 
@@ -32,8 +51,8 @@ namespace _02_MVC.Controllers
             return Json(medicos, JsonRequestBehavior.AllowGet);
         }
 
-        // AJAX: días disponibles del mes + conteo de slots libres por día
-        public JsonResult GetCalendario(int idMedico, int anio, int mes)
+        // AJAX: días disponibles de la semana + conteo de slots libres por día
+        public JsonResult GetCalendario(int idMedico, int anio, int semana)
         {
             var medico = db.medicos.Include(m => m.especialidades)
                            .FirstOrDefault(m => m.IdMedico == idMedico);
@@ -50,16 +69,20 @@ namespace _02_MVC.Controllers
 
             var inicio = medico.especialidades.Franja_HI;
             var fin    = medico.especialidades.Franja_HF;
-            int totalSlots = (int)((fin - inicio).TotalMinutes / 30);
+            int totalSlots = (int)((fin - inicio).TotalMinutes / DURACION_CITA);
 
-            var primerDia = new DateTime(anio, mes, 1);
-            var ultimoDia = new DateTime(anio, mes, DateTime.DaysInMonth(anio, mes));
+            // Calcular el lunes de la semana ISO 8601 (calendario gregoriano)
+            // La semana 1 es la que contiene el primer jueves del año (enero 4 siempre cae en semana 1)
+            var enero4 = new DateTime(anio, 1, 4);
+            int dow = (int)enero4.DayOfWeek;
+            if (dow == 0) dow = 7; // domingo = 7 en ISO
+            var lunes = enero4.AddDays(1 - dow).AddDays((semana - 1) * 7);
+            var viernes = lunes.AddDays(4);
 
-            // Reservas del mes para ese médico
             var reservasPorDia = db.consultas
                 .Where(c => c.IdMedico == idMedico
-                         && c.FechaConsulta >= primerDia
-                         && c.FechaConsulta <= ultimoDia)
+                         && c.FechaConsulta >= lunes
+                         && c.FechaConsulta <= viernes)
                 .GroupBy(c => DbFunctions.TruncateTime(c.FechaConsulta))
                 .Select(g => new { fecha = g.Key, ocupados = g.Count() })
                 .ToList();
@@ -67,9 +90,9 @@ namespace _02_MVC.Controllers
             var diasDisponibles = new List<string>();
             var slotsLibres = new Dictionary<string, int>();
 
-            for (int d = 1; d <= DateTime.DaysInMonth(anio, mes); d++)
+            for (int i = 0; i <= 4; i++) // lunes a viernes
             {
-                var fecha = new DateTime(anio, mes, d);
+                var fecha = lunes.AddDays(i);
                 if (!diasSemana.Contains((int)fecha.DayOfWeek)) continue;
 
                 string key = fecha.ToString("yyyy-MM-dd");
@@ -79,7 +102,7 @@ namespace _02_MVC.Controllers
                 slotsLibres[key] = totalSlots - (reserva != null ? reserva.ocupados : 0);
             }
 
-            return Json(new { diasDisponibles, slotsLibres, totalSlots }, JsonRequestBehavior.AllowGet);
+            return Json(new { diasDisponibles, slotsLibres, totalSlots, lunesSemana = lunes.ToString("yyyy-MM-dd"), viernesSemana = viernes.ToString("yyyy-MM-dd") }, JsonRequestBehavior.AllowGet);
         }
 
         // AJAX: horas libres para un médico en una fecha
@@ -108,7 +131,7 @@ namespace _02_MVC.Controllers
             {
                 if (!horasOcupadas.Contains(slotActual))
                     slots.Add(slotActual.ToString(@"hh\:mm"));
-                slotActual = slotActual.Add(TimeSpan.FromMinutes(30));
+                slotActual = slotActual.Add(TimeSpan.FromMinutes(DURACION_CITA));
             }
 
             return Json(slots, JsonRequestBehavior.AllowGet);
@@ -116,15 +139,26 @@ namespace _02_MVC.Controllers
 
         // POST: confirmar cita
         [HttpPost]
-        public ActionResult Confirmar(int idMedico, string fecha, string hora)
+        public ActionResult Confirmar(int idMedico, string fecha, string hora, int? idPaciente)
         {
             var usuario = SessionHelper.CurrentUser;
             if (usuario == null)
                 return Json(new { success = false, message = "Sesión expirada. Vuelve a iniciar sesión." });
 
-            var paciente = db.pacientes.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+            pacientes paciente;
+            if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
+            {
+                if (idPaciente == null)
+                    return Json(new { success = false, message = "Debe seleccionar un paciente." });
+                paciente = db.pacientes.Find(idPaciente.Value);
+            }
+            else
+            {
+                paciente = db.pacientes.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+            }
+
             if (paciente == null)
-                return Json(new { success = false, message = "No se encontró tu perfil de paciente." });
+                return Json(new { success = false, message = "No se encontró el perfil de paciente." });
 
             DateTime fechaDt;
             if (!DateTime.TryParse(fecha, out fechaDt))
@@ -135,7 +169,7 @@ namespace _02_MVC.Controllers
                 return Json(new { success = false, message = "No puedes agendar una cita en una fecha pasada." });
 
             TimeSpan horaTs  = TimeSpan.Parse(hora);
-            TimeSpan horaFin = horaTs.Add(TimeSpan.FromMinutes(30));
+            TimeSpan horaFin = horaTs.Add(TimeSpan.FromMinutes(DURACION_CITA));
 
             // Validación 1: el paciente ya tiene cita a esa hora ese día
             bool conflictoPaciente = db.consultas.Any(c =>

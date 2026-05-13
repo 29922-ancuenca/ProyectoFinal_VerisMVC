@@ -157,21 +157,27 @@
 
                     @if (!Request.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Paciente" })">
-                                <i class="bi bi-people-fill"></i>M&oacute;dulo Paciente
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Medico" })">
-                                <i class="bi bi-person-badge-fill"></i>M&oacute;dulo M&eacute;dico
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Administrador" })">
-                                <i class="bi bi-shield-lock-fill"></i>M&oacute;dulo Administrador
-                            </a>
-                        </li>
+                        if (ViewBag.Modulo == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Paciente" })">M&oacute;dulo Paciente</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Medico" })">M&oacute;dulo M&eacute;dico</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Administrador" })">M&oacute;dulo Administrador</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account")">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Register", "Account")">Register</a>
+                            </li>
+                        }
                     }
                     else if (User.IsInRole("SuperAdmin"))
                     {
