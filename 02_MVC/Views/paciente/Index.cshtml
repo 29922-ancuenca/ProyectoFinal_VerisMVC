@@ -102,7 +102,7 @@
         <td>
             @if (!string.IsNullOrEmpty(item.Foto))
             {
-                <img src="~/imágenes/usuarios/@item.Foto" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border:2px solid #e2e8f0;" alt="foto" />
+                <img src="/im%C3%A1genes/usuarios/@item.Foto" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border:2px solid #e2e8f0;" alt="foto" />
             }
             else
             {
@@ -114,7 +114,6 @@
         </td>
         <td>
             @Html.ActionLink("Details", "Details", new { id = item.IdPaciente })
-            @Html.ActionLink("Edit", "Edit", new { id = item.IdPaciente })
             @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
             {
                 @: | @Html.ActionLink("Edit", "Edit", new { id = item.IdPaciente })

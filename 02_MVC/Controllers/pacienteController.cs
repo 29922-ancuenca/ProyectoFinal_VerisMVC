@@ -48,6 +48,7 @@ namespace _02_MVC.Controllers
         }
 
         // GET: paciente/Create
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Create()
         {
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email");
@@ -58,6 +59,7 @@ namespace _02_MVC.Controllers
         // POST: paciente/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Create([Bind(Include = "IdPaciente,IdUsuario,Nombre,Cedula,Edad,Genero,Estatura,Peso,Foto")] pacientes pacientes)
         {
             if (ModelState.IsValid)
@@ -85,14 +87,20 @@ namespace _02_MVC.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             pacientes pacientes = db.pacientes.Find(id);
             if (pacientes == null)
-            {
                 return HttpNotFound();
+
+            // Paciente solo puede editar su propio perfil
+            if (User.IsInRole("Paciente") && !User.IsInRole("SuperAdmin") && !User.IsInRole("Administrador"))
+            {
+                var usuario = SessionHelper.CurrentUser;
+                if (usuario == null || pacientes.IdUsuario != usuario.Id)
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
+
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", pacientes.IdUsuario);
             CargarFotosPaciente(pacientes.Foto);
             return View(pacientes);
@@ -103,6 +111,14 @@ namespace _02_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IdPaciente,IdUsuario,Nombre,Cedula,Edad,Genero,Estatura,Peso,Foto")] pacientes pacientes)
         {
+            // Paciente solo puede editar su propio perfil
+            if (User.IsInRole("Paciente") && !User.IsInRole("SuperAdmin") && !User.IsInRole("Administrador"))
+            {
+                var usuario = SessionHelper.CurrentUser;
+                if (usuario == null || pacientes.IdUsuario != usuario.Id)
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            }
+
             if (ModelState.IsValid)
             {
                 db.Entry(pacientes).State = EntityState.Modified;

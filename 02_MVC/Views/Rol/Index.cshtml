@@ -51,6 +51,10 @@
     {
         <div class="alert alert-info text-center shadow-sm">@TempData["Mensaje"]</div>
     }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center shadow-sm">@TempData["Error"]</div>
+    }
 
     <div class="rol-card card">
         <div class="card-body p-0">

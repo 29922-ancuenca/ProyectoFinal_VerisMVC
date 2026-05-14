@@ -62,16 +62,21 @@
                     </select>
                 </div>
 
-                @* Paso 3: Diagnóstico (editable) *@
+                @* Paso 3: Diagnóstico (solo lectura) *@
                 <div class="mb-3">
                     <label class="form-label-custom">
                         <span class="step-badge">3</span>Diagn&oacute;stico
-                        <span class="badge-pendiente" id="badgePendiente" style="display:none;">Pendiente &mdash; ingresa el diagn&oacute;stico</span>
                     </label>
                     <textarea id="txtDiagnostico" name="Diagnostico" rows="2"
                               class="input-diagnostico"
                               placeholder="Se cargar&aacute; al seleccionar la consulta..."
-                              disabled></textarea>
+                              readonly
+                              style="background:#f1f5f9; color:#475569; cursor:not-allowed;"></textarea>
+
+                    <div id="alertaPendiente" class="mt-2 p-3 rounded" style="display:none; background:#fef3c7; border:1px solid #f59e0b; color:#92400e;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Consulta no atendida.</strong> Debe registrar un diagn&oacute;stico antes de crear una receta.
+                    </div>
                 </div>
 
                 @* Paso 4: Medicamento *@
@@ -91,7 +96,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-guardar">
+                    <button type="submit" id="btnGuardar" class="btn btn-guardar" disabled>
                         <i class="bi bi-check-circle-fill me-1"></i>Guardar
                     </button>
                     @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-secondary rounded-pill px-4" })
@@ -138,8 +143,9 @@
             var hiddenConsulta = $('#IdConsulta');
             var txtDiag = $('#txtDiagnostico');
 
-            txtDiag.val('').prop('disabled', true);
-            $('#badgePendiente').hide();
+            txtDiag.val('');
+            $('#alertaPendiente').hide();
+            $('#btnGuardar').prop('disabled', true);
             hiddenConsulta.val('');
 
             if (!idConsulta) return;
@@ -147,13 +153,14 @@
             hiddenConsulta.val(idConsulta);
 
             $.getJSON('@Url.Action("GetDiagnostico", "recetas")', { idConsulta: idConsulta }, function (data) {
-                txtDiag.prop('disabled', false);
                 if (!data.diagnostico || data.diagnostico === 'Pendiente') {
-                    txtDiag.val('');
-                    $('#badgePendiente').show();
+                    txtDiag.val('Pendiente');
+                    $('#alertaPendiente').show();
+                    $('#btnGuardar').prop('disabled', true);
                 } else {
                     txtDiag.val(data.diagnostico);
-                    $('#badgePendiente').hide();
+                    $('#alertaPendiente').hide();
+                    $('#btnGuardar').prop('disabled', false);
                 }
             });
         });

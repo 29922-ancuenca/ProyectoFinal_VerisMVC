@@ -90,7 +90,11 @@ namespace _02_MVC.Controllers
 
             List<pacientes> listaPacientes;
 
-            if (User.IsInRole("Medico"))
+            if (User.IsInRole("SuperAdmin"))
+            {
+                listaPacientes = db.pacientes.ToList();
+            }
+            else if (User.IsInRole("Medico"))
             {
                 var medico = db.medicos.FirstOrDefault(m => m.IdUsuario == usuario.Id);
                 if (medico != null)
@@ -111,13 +115,7 @@ namespace _02_MVC.Controllers
             }
             else
             {
-                var idsPacientes = db.consultas
-                    .Select(c => c.IdPaciente)
-                    .Distinct()
-                    .ToList();
-                listaPacientes = db.pacientes
-                    .Where(p => idsPacientes.Contains(p.IdPaciente))
-                    .ToList();
+                listaPacientes = db.pacientes.ToList();
             }
 
             ViewBag.Pacientes = new SelectList(listaPacientes, "IdPaciente", "Nombre");
@@ -164,31 +162,51 @@ namespace _02_MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin, Medico")]
-        public ActionResult Create([Bind(Include = "IdReceta,IdConsulta,IdMedicamento,Cantidad")] recetas recetas, FormCollection form)
+        public ActionResult Create([Bind(Include = "IdReceta,IdConsulta,IdMedicamento,Cantidad")] recetas recetas)
         {
             if (ModelState.IsValid)
             {
-                db.recetas.Add(recetas);
-
-                string diagnostico = form["Diagnostico"];
-                if (!string.IsNullOrWhiteSpace(diagnostico))
+                var consulta = db.consultas.Find(recetas.IdConsulta);
+                if (consulta == null || string.IsNullOrWhiteSpace(consulta.Diagnostico) || consulta.Diagnostico == "Pendiente")
                 {
-                    var consulta = db.consultas.Find(recetas.IdConsulta);
-                    if (consulta != null)
-                        consulta.Diagnostico = diagnostico.Trim();
+                    ModelState.AddModelError("", "La consulta seleccionada aún no ha sido atendida. Registre un diagnóstico antes de crear la receta.");
                 }
+                else
+                {
+                    // Médico solo puede crear recetas de sus propias consultas
+                    if (User.IsInRole("Medico") && !User.IsInRole("SuperAdmin"))
+                    {
+                        var usuarioSesion = SessionHelper.CurrentUser;
+                        var medico = db.medicos.FirstOrDefault(m => m.IdUsuario == usuarioSesion.Id);
+                        if (medico == null || consulta.IdMedico != medico.IdMedico)
+                            return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                    }
 
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    db.recetas.Add(recetas);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
 
-            ViewBag.IdConsulta = new SelectList(
-                db.consultas.Include(c => c.pacientes).ToList()
-                    .Select(c => new {
-                        c.IdConsulta,
-                        Descripcion = c.pacientes.Nombre + " — " + c.Diagnostico
-                    }),
-                "IdConsulta", "Descripcion", recetas.IdConsulta);
+            var usuario = SessionHelper.CurrentUser;
+            List<pacientes> listaPacientesError;
+            if (User.IsInRole("SuperAdmin"))
+            {
+                listaPacientesError = db.pacientes.ToList();
+            }
+            else if (User.IsInRole("Medico") && usuario != null)
+            {
+                var medico = db.medicos.FirstOrDefault(m => m.IdUsuario == usuario.Id);
+                if (medico != null)
+                {
+                    var ids = db.consultas.Where(c => c.IdMedico == medico.IdMedico).Select(c => c.IdPaciente).Distinct().ToList();
+                    listaPacientesError = db.pacientes.Where(p => ids.Contains(p.IdPaciente)).ToList();
+                }
+                else listaPacientesError = new List<pacientes>();
+            }
+            else listaPacientesError = new List<pacientes>();
+
+            ViewBag.Pacientes = new SelectList(listaPacientesError, "IdPaciente", "Nombre");
             ViewBag.IdMedicamento = new SelectList(db.medicamentos, "IdMedicamento", "Nombre", recetas.IdMedicamento);
             return View(recetas);
         }
@@ -210,7 +228,7 @@ namespace _02_MVC.Controllers
                 db.consultas.Include(c => c.pacientes).ToList()
                     .Select(c => new {
                         c.IdConsulta,
-                        Descripcion = c.pacientes.Nombre + " — " + c.Diagnostico
+                        Descripcion = (c.pacientes != null ? c.pacientes.Nombre : "Sin paciente") + " — " + (c.Diagnostico ?? "")
                     }),
                 "IdConsulta", "Descripcion", recetas.IdConsulta);
             ViewBag.IdMedicamento = new SelectList(db.medicamentos, "IdMedicamento", "Nombre", recetas.IdMedicamento);
@@ -235,7 +253,7 @@ namespace _02_MVC.Controllers
                 db.consultas.Include(c => c.pacientes).ToList()
                     .Select(c => new {
                         c.IdConsulta,
-                        Descripcion = c.pacientes.Nombre + " — " + c.Diagnostico
+                        Descripcion = (c.pacientes != null ? c.pacientes.Nombre : "Sin paciente") + " — " + (c.Diagnostico ?? "")
                     }),
                 "IdConsulta", "Descripcion", recetas.IdConsulta);
             ViewBag.IdMedicamento = new SelectList(db.medicamentos, "IdMedicamento", "Nombre", recetas.IdMedicamento);

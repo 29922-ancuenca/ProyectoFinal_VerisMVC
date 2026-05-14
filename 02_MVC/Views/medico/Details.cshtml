@@ -1,7 +1,7 @@
-@model _02_MVC.Models.medicos
+﻿@model _02_MVC.Models.medicos
 
 @{
-    ViewBag.Title = "Detalle Médico";
+    ViewBag.Title = "Detalle MÃ©dico";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -26,7 +26,7 @@
             @if (!string.IsNullOrEmpty(Model.Foto))
             {
                 <div class="text-center mb-4">
-                    <img src='@("/imágenes/sellos/" + Model.Foto)'
+                    <img src='/im%C3%A1genes/m%C3%A9dicos/@Model.Foto'
                          style="width:90px; height:90px; object-fit:cover; border-radius:50%; border:3px solid #e2e8f0;" alt="foto" />
                 </div>
             }
@@ -51,3 +51,4 @@
         </div>
     </div>
 </div>
+

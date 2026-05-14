@@ -97,7 +97,7 @@
                     new { @class = "form-control", onchange = "previsualizarFoto(this.value)" })
                 @Html.ValidationMessageFor(model => model.Foto, "", new { @class = "text-danger" })
                 <img id="fotoPreview"
-                     src="@(Model.Foto != null ? "/imágenes/usuarios/" + Model.Foto : "")"
+                     src="@(Model.Foto != null ? "/im%C3%A1genes/usuarios/" + Model.Foto : "")"
                      alt="Vista previa"
                      style="max-width:120px; margin-top:8px; border-radius:8px; @(Model.Foto != null ? "" : "display:none;")" />
             </div>
@@ -120,7 +120,7 @@
         function previsualizarFoto(nombre) {
             var img = document.getElementById('fotoPreview');
             if (nombre) {
-                img.src = '/imágenes/usuarios/' + nombre;
+                img.src = '/im%C3%A1genes/usuarios/' + nombre;
                 img.style.display = 'block';
             } else {
                 img.style.display = 'none';

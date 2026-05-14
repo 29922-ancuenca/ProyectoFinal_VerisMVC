@@ -48,6 +48,7 @@ namespace _02_MVC.Controllers
         }
 
         // GET: medico/Create
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Create()
         {
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion");
@@ -59,6 +60,7 @@ namespace _02_MVC.Controllers
         // POST: medico/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin, Administrador")]
         public ActionResult Create([Bind(Include = "IdMedico,IdUsuario,IdEspecialidad,Nombre,Foto")] medicos medicos)
         {
             if (ModelState.IsValid)
@@ -77,14 +79,20 @@ namespace _02_MVC.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             medicos medicos = db.medicos.Find(id);
             if (medicos == null)
-            {
                 return HttpNotFound();
+
+            // Médico solo puede editar su propio perfil
+            if (User.IsInRole("Medico") && !User.IsInRole("SuperAdmin") && !User.IsInRole("Administrador"))
+            {
+                var usuario = SessionHelper.CurrentUser;
+                if (usuario == null || medicos.IdUsuario != usuario.Id)
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
+
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion", medicos.IdEspecialidad);
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
             CargarFotosMedico(medicos.Foto);
@@ -96,6 +104,14 @@ namespace _02_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IdMedico,IdUsuario,IdEspecialidad,Nombre,Foto")] medicos medicos)
         {
+            // Médico solo puede editar su propio perfil
+            if (User.IsInRole("Medico") && !User.IsInRole("SuperAdmin") && !User.IsInRole("Administrador"))
+            {
+                var usuario = SessionHelper.CurrentUser;
+                if (usuario == null || medicos.IdUsuario != usuario.Id)
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            }
+
             if (ModelState.IsValid)
             {
                 db.Entry(medicos).State = EntityState.Modified;
@@ -137,7 +153,7 @@ namespace _02_MVC.Controllers
 
         private void CargarFotosMedico(string seleccionada = null)
         {
-            string carpeta = Server.MapPath("~/imágenes/sellos/");
+            string carpeta = Server.MapPath("~/imágenes/médicos/");
             var imagenes = System.IO.Directory.Exists(carpeta)
                 ? System.IO.Directory.GetFiles(carpeta)
                     .Select(f => System.IO.Path.GetFileName(f))

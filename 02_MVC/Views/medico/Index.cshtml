@@ -1,4 +1,4 @@
-@model IEnumerable<_02_MVC.Models.medicos>
+﻿@model IEnumerable<_02_MVC.Models.medicos>
 
 @{
     ViewBag.Title = "Index";
@@ -44,7 +44,7 @@
         </h2>
         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Administrador"))
         {
-            <p class="mb-0"><a href="@Url.Action("Create", "medico")" class="btn btn-primary rounded-pill px-4">Nuevo Médico</a></p>
+            <p class="mb-0"><a href="@Url.Action("Create", "medico")" class="btn btn-primary rounded-pill px-4">Nuevo M&eacute;dico</a></p>
         }
     </div>
 
@@ -75,7 +75,8 @@
         <td>
             @if (!string.IsNullOrEmpty(item.Foto))
             {
-                <img src="~/imágenes/sellos/@item.Foto" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border:2px solid #e2e8f0;" alt="foto" />
+                <img src="/im%C3%A1genes/m%C3%A9dicos/@item.Foto" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border:2px solid #e2e8f0;" alt="foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" />
+                <i class="bi bi-person-circle" style="font-size:2rem; color:#0d6efd; display:none;"></i>
             }
             else
             {
@@ -103,3 +104,4 @@
         </div>
     </div>
 </div>
+
