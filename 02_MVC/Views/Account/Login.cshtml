@@ -120,14 +120,6 @@
                     </div>
 
                     <div class="row mb-3 align-items-center">
-                        @Html.LabelFor(m => m.Email, new { @class = "col-md-3 col-form-label veris-login-label" })
-                        <div class="col-md-9">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control veris-login-input", placeholder = "Ingrese su correo electrónico" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="row mb-3 align-items-center">
                         @Html.LabelFor(m => m.Password, new { @class = "col-md-3 col-form-label veris-login-label" })
                         <div class="col-md-9">
                             @Html.PasswordFor(m => m.Password, new { @class = "form-control veris-login-input", placeholder = "Ingrese su contraseña" })

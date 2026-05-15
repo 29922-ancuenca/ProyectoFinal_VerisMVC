@@ -112,6 +112,20 @@ namespace _02_MVC.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
 
+            // Validar: si cambia la especialidad y tiene consultas pendientes, no permitir
+            var medicoActual = db.medicos.AsNoTracking().FirstOrDefault(m => m.IdMedico == medicos.IdMedico);
+            if (medicoActual != null && medicoActual.IdEspecialidad != medicos.IdEspecialidad)
+            {
+                bool tienePendientes = db.consultas
+                    .Where(c => c.IdMedico == medicos.IdMedico)
+                    .AsEnumerable()
+                    .Any(c => string.IsNullOrWhiteSpace(c.Diagnostico) || c.Diagnostico == "Pendiente");
+                if (tienePendientes)
+                {
+                    ModelState.AddModelError("", "No puede cambiar la especialidad mientras tenga consultas pendientes por atender.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 db.Entry(medicos).State = EntityState.Modified;
@@ -120,6 +134,7 @@ namespace _02_MVC.Controllers
             }
             ViewBag.IdEspecialidad = new SelectList(db.especialidades, "IdEspecialidad", "Descripcion", medicos.IdEspecialidad);
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", medicos.IdUsuario);
+            CargarFotosMedico(medicos.Foto);
             return View(medicos);
         }
 

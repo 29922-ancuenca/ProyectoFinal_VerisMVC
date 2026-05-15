@@ -76,9 +76,9 @@ namespace _02_MVC.Controllers
                 return View(model);
 
             var usuario = await UserManager.FindByNameAsync(model.UserName);
-            if (usuario == null || usuario.Email != model.Email)
+            if (usuario == null)
             {
-                ModelState.AddModelError("", "Nombre de usuario o correo electrónico no válido.");
+                ModelState.AddModelError("", "Nombre de usuario no válido.");
                 return View(model);
             }
 
@@ -111,6 +111,27 @@ namespace _02_MVC.Controllers
                     Session["UserId"]   = usuario.Id;
                     Session["UserName"] = usuario.UserName;
                     Session["Email"]    = usuario.Email;
+                    using (var dbFoto = new _02_MVC.Models.ProyectoVeris_MVC_BDEntities())
+                    {
+                        string fotoUrl = null;
+                        if (roles.Contains("Administrador") && !roles.Contains("SuperAdmin"))
+                        {
+                            fotoUrl = "/im%C3%A1genes/administrador/usu08.jpg";
+                        }
+                        else if (roles.Contains("Medico") && !roles.Contains("SuperAdmin"))
+                        {
+                            var med = dbFoto.medicos.FirstOrDefault(m => m.IdUsuario == usuario.Id);
+                            if (med != null && !string.IsNullOrEmpty(med.Foto))
+                                fotoUrl = "/im%C3%A1genes/m%C3%A9dicos/" + med.Foto;
+                        }
+                        else if (roles.Contains("Paciente") && !roles.Contains("SuperAdmin"))
+                        {
+                            var pac = dbFoto.pacientes.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+                            if (pac != null && !string.IsNullOrEmpty(pac.Foto))
+                                fotoUrl = "/im%C3%A1genes/usuarios/" + pac.Foto;
+                        }
+                        Session["FotoUsuario"] = fotoUrl;
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

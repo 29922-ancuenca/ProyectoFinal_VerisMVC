@@ -102,7 +102,18 @@
                     {
                         <tr>
                             <td><strong>@item.Descripcion</strong></td>
-                            <td><span class="badge-dias">@item.Dias</span></td>
+                            <td>
+                                @{
+                                    var diasTexto = (item.Dias ?? "")
+                                        .Replace("L", "Lunes ")
+                                        .Replace("M", "Martes ")
+                                        .Replace("X", "Miercoles ")
+                                        .Replace("J", "Jueves ")
+                                        .Replace("V", "Viernes ")
+                                        .Trim();
+                                }
+                                <span class="badge-dias">@diasTexto</span>
+                            </td>
                             <td><span class="badge-hora">@item.Franja_HI.ToString(@"hh\:mm")</span></td>
                             <td><span class="badge-hora">@item.Franja_HF.ToString(@"hh\:mm")</span></td>
                             <td class="text-end">

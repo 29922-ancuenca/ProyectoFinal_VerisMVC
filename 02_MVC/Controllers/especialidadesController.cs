@@ -47,8 +47,13 @@ namespace _02_MVC.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "IdEspecialidad,Descripcion,Dias,Franja_HI,Franja_HF")] especialidades especialidades)
+        public ActionResult Create([Bind(Include = "IdEspecialidad,Descripcion,Franja_HI,Franja_HF")] especialidades especialidades)
         {
+            var diasSeleccionados = Request.Form.GetValues("Dias");
+            especialidades.Dias = diasSeleccionados != null ? string.Join("", diasSeleccionados) : "";
+
+            ValidarFranjaHoraria(especialidades.Franja_HI, especialidades.Franja_HF);
+
             if (ModelState.IsValid)
             {
                 db.especialidades.Add(especialidades);
@@ -79,8 +84,13 @@ namespace _02_MVC.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "IdEspecialidad,Descripcion,Dias,Franja_HI,Franja_HF")] especialidades especialidades)
+        public ActionResult Edit([Bind(Include = "IdEspecialidad,Descripcion,Franja_HI,Franja_HF")] especialidades especialidades)
         {
+            var diasSeleccionados = Request.Form.GetValues("Dias");
+            especialidades.Dias = diasSeleccionados != null ? string.Join("", diasSeleccionados) : "";
+
+            ValidarFranjaHoraria(especialidades.Franja_HI, especialidades.Franja_HF);
+
             if (ModelState.IsValid)
             {
                 db.Entry(especialidades).State = EntityState.Modified;
@@ -88,6 +98,24 @@ namespace _02_MVC.Controllers
                 return RedirectToAction("Index");
             }
             return View(especialidades);
+        }
+
+        private void ValidarFranjaHoraria(TimeSpan? hi, TimeSpan? hf)
+        {
+            var minimo = new TimeSpan(8, 0, 0);
+            var maximo = new TimeSpan(18, 0, 0);
+
+            if (hi == null || hf == null)
+            {
+                ModelState.AddModelError("", "Debe ingresar la hora de inicio y hora de fin.");
+                return;
+            }
+            if (hi < minimo || hi > maximo)
+                ModelState.AddModelError("Franja_HI", "La hora de inicio debe estar entre 08:00 y 18:00 (Matutina: 08:00 a 12:00 / Vespertina: 12:00 a 18:00).");
+            if (hf < minimo || hf > maximo)
+                ModelState.AddModelError("Franja_HF", "La hora de fin debe estar entre 08:00 y 18:00 (Matutina: 08:00 a 12:00 / Vespertina: 12:00 a 18:00).");
+            if (hi >= hf)
+                ModelState.AddModelError("", "La hora de inicio debe ser menor a la hora de fin.");
         }
 
         // GET: especialidades/Delete/5

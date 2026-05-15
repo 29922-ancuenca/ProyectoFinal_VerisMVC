@@ -126,6 +126,7 @@ namespace _02_MVC.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Email", pacientes.IdUsuario);
+            CargarFotosPaciente(pacientes.Foto);
             return View(pacientes);
         }
 

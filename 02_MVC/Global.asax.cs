@@ -80,12 +80,12 @@ namespace _02_MVC
                 RequireUppercase = false
             };
 
-            CrearUsuarioSistema(userManager, "SuperAdmin", "superadmin@veris.com");
-            CrearUsuarioSistema(userManager, "ADM", "admin@veris.com");
+            CrearUsuarioSistema(userManager, "SuperAdmin", "superadmin@veris.com", "superadmin123");
+            CrearUsuarioSistema(userManager, "ADM", "admin@veris.com", "adm123");
         }
 
-        /* Auxiliar para crear usuario con pass por defecto */
-        private void CrearUsuarioSistema(UserManager<ApplicationUser> userManager, string username, string email)
+        /* Auxiliar para crear usuario con contraseña específica */
+        private void CrearUsuarioSistema(UserManager<ApplicationUser> userManager, string username, string email, string password)
         {
             var usuario = userManager.FindByName(username);
             if (usuario == null)
@@ -96,16 +96,19 @@ namespace _02_MVC
                     Email = email
                 };
 
-                var resultado = userManager.Create(nuevoUsuario, "123");
+                var resultado = userManager.Create(nuevoUsuario, password);
 
                 if (resultado.Succeeded)
-                    System.Diagnostics.Debug.WriteLine($"Usuario '{username}' creado (pass: 123)");
+                    System.Diagnostics.Debug.WriteLine($"Usuario '{username}' creado (pass: {password})");
                 else
                     System.Diagnostics.Debug.WriteLine($"Error creando '{username}': {string.Join(", ", resultado.Errors)}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"Usuario '{username}' ya existe");
+                // Si ya existe, actualizar la contraseña a la correcta
+                userManager.RemovePassword(usuario.Id);
+                userManager.AddPassword(usuario.Id, password);
+                System.Diagnostics.Debug.WriteLine($"Usuario '{username}' ya existe — contraseña actualizada.");
             }
         }
 

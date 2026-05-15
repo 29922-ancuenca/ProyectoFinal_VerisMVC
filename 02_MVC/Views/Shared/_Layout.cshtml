@@ -157,27 +157,15 @@
 
                     @if (!Request.IsAuthenticated)
                     {
-                        if (ViewBag.Modulo == null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Paciente" })">M&oacute;dulo Paciente</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Medico" })">M&oacute;dulo M&eacute;dico</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Administrador" })">M&oacute;dulo Administrador</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Account")">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Register", "Account")">Register</a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Paciente" })">M&oacute;dulo Paciente</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Medico" })">M&oacute;dulo M&eacute;dico</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account", new { modulo = "Administrador" })">M&oacute;dulo Administrador</a>
+                        </li>
                     }
                     else if (User.IsInRole("SuperAdmin"))
                     {
@@ -213,6 +201,9 @@
                 </ul>
 
                 <div class="d-flex gap-2 align-items-center">
+                    @{
+                        string fotoNav = Session["FotoUsuario"] as string;
+                    }
                     @if (!Request.IsAuthenticated)
                     {
                         <a href="@Url.Action("Register", "Account")" class="btn btn-outline-primary btn-sm rounded-pill px-3">
@@ -224,8 +215,18 @@
                     }
                     else
                     {
-                        <span class="fw-semibold text-dark me-1">
-                            <i class="bi bi-person-circle me-1"></i>@User.Identity.Name
+                        <span class="fw-semibold text-dark me-1 d-flex align-items-center gap-2">
+                            @if (!string.IsNullOrEmpty(fotoNav))
+                            {
+                                <img src="@fotoNav"
+                                     alt="Foto"
+                                     style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #0d6efd;" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-circle fs-5"></i>
+                            }
+                            @User.Identity.Name
                         </span>
                         <form action="@Url.Action("LogOff", "Account")" method="post" style="display:inline">
                             @Html.AntiForgeryToken()

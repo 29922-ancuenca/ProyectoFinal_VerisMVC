@@ -32,13 +32,25 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.IdPaciente)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdUsuario, "IdUsuario", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+        @{
+            bool esPacienteSolo = User.IsInRole("Paciente") && !User.IsInRole("SuperAdmin") && !User.IsInRole("Administrador");
+        }
+
+        @* IdUsuario: oculto para Paciente, desplegable para Admin/SuperAdmin *@
+        @if (esPacienteSolo)
+        {
+            @Html.HiddenFor(model => model.IdUsuario)
+        }
+        else
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.IdUsuario, "IdUsuario", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
+        }
 
         <div class="form-group">
             @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -48,11 +60,21 @@
             </div>
         </div>
 
+        @* Cédula: readonly para Paciente, editable para Admin/SuperAdmin *@
         <div class="form-group">
             @Html.LabelFor(model => model.Cedula, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+                @if (esPacienteSolo)
+                {
+                    @Html.HiddenFor(model => model.Cedula)
+                    <input type="text" class="form-control" value="@Model.Cedula"
+                           readonly style="background:#f1f5f9; color:#64748b; cursor:not-allowed;" />
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
 
@@ -64,11 +86,23 @@
             </div>
         </div>
 
+        @* Género: dropdown para Paciente, texto libre para Admin/SuperAdmin *@
         <div class="form-group">
             @Html.LabelFor(model => model.Genero, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Genero, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
+                @if (esPacienteSolo)
+                {
+                    @Html.DropDownListFor(model => model.Genero,
+                        new SelectList(new[] { "Masculino", "Femenino", "Otro" }, Model.Genero),
+                        "-- Seleccione --",
+                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Genero, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
 
